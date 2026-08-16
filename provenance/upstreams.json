@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "project_license": "MIT",
+  "status": "unreleased-implementation",
+  "implementation_lane": "independent-mit-code-plus-operator-installed-resource-interpreter",
+  "baseline": {
+    "pack": "All the Mons 1.2.0",
+    "pack_commit": "c7bb230f21d14d26859d0b92548f089b3a493ad9",
+    "minecraft": "1.21.1",
+    "neoforge": "21.1.248",
+    "java": 21
+  },
+  "bluemap": {
+    "backport_version": "5.22-agent.backport-5.22-mc1.21.1-2",
+    "backport_commit": "9be321df995a1103808621d529eb72773e719d4d",
+    "release_jar_sha256": "749f7647fa29764cea113114a7ab3259271bab3da22720989f2bd9fd1f3ba150",
+    "declared_license": "MIT",
+    "role": "renderer-semantics adaptation with retained attribution",
+    "bundled": false
+  },
+  "implementation_source": {
+    "name": "BlueMap Connected Glass Add-on",
+    "repository": "https://github.com/jan-guenter/bluemap-connectedglass-addon",
+    "peeled_tag_commit": "4a4eb5030d18f1e54cd5a8ad1c2dc093a187ac06",
+    "declared_license": "MIT",
+    "role": "scaffold and independently authored Fusion-resource interpreter substrate",
+    "binary_bundled": false,
+    "assets_bundled": false
+  },
+  "artifacts": {
+    "glassential": {
+      "version": "3.4.5",
+      "file_name": "Glassential-renewed-1.21.1-3.4.5.jar",
+      "size": 702249,
+      "sha1": "3a08f59f0930c8123fa1aacdfa0ba9fbdbb6e342",
+      "sha256": "1f0c8f7533bf3b2002575219ba795fd32a44cc5085c2710624ebbf69e6121471",
+      "sha512": "62ccb9057aab96ba656ec8ce357977360c1cc7761fedd7ac995a40b1f16e389c75d753746840b11d30077b6b896938246fb281ec481e560a05084e22098c31d8",
+      "curseforge": {"project": 945149, "file": 8440850},
+      "modrinth": {"project": "kc9FSsYx", "version": "ZU9ErRM9"},
+      "declared_license": "MIT",
+      "source_correlation": "not asserted; no upstream source used",
+      "bundled": false
+    },
+    "fusion": {
+      "version": "1.3.12",
+      "file_name": "fusion-1.3.12-neoforge-mc1.21.1.jar",
+      "size": 923270,
+      "sha1": "79c0c6b6a2d9c9a04298df9a88bb71a93e885235",
+      "sha256": "17f5215648a98bcde4134577b013200dbf363273ae282449c51408ae8346f2fa",
+      "sha512": "a13d2a654988f021106f8a455134da1b515872e9122cf70bda064e663749f1c11aeddc3def23a621e236f2ffeefb6f56b15c2c63eeb2bca5f9833c5a2dc23a93",
+      "curseforge": {"project": 854949, "file": 8536618},
+      "modrinth": {"project": "p19vrgc2", "version": "6Oxgpgr9"},
+      "declared_license": "All rights reserved",
+      "source_correlation": "not asserted; no upstream source used",
+      "bundled": false
+    }
+  },
+  "coverage": {
+    "registered_glassential_blocks": 113,
+    "registered_glassential_legal_states": 5449,
+    "routed_glassential_blocks": 31,
+    "routed_glassential_legal_states": 453,
+    "stock_glassential_blocks": 82,
+    "stock_glassential_legal_states": 4996,
+    "vanilla_override_blocks": 18,
+    "routed_blocks": 49,
+    "routed_legal_states": 471,
+    "direct_render_programs": 95,
+    "fusion_programs": 93,
+    "one_way_programs": 2,
+    "selected_model_closure": 100,
+    "operator_png_resources": 39,
+    "fusion_metadata_resources": 34,
+    "operator_resource_closure_paths": 204,
+    "host_resource_abi_paths": 22,
+    "definitions_sha256": "2756fd50be5fb2da5e2fb366c7b89f6a6e700361bb7369f016dcbef36834bc45",
+    "direct_models_sha256": "8736bbf9b925b7f793489ba14cc421eaf72414f7f22b70802f759d2ee24f241c",
+    "required_resources_sha256": "a6a8eb7addb5a3866ea27d91935d7501236f3b93c2536004cb9148dd7d6b8d67",
+    "textures_sha256": "2452dc2aba6249599c5a5eecf280a7ac4e9b704bb6cd29a7656acd1a6c7b7e3e",
+    "host_resources_sha256": "2b63c65a78eefce67a9cb51759d0f375f02ade20aa3f3c27aaad10555a9e6221"
+  },
+  "third_party_code_bundled": false,
+  "third_party_assets_bundled": false
+}

@@ -1,0 +1,1632 @@
+{
+  "cases": [
+    {
+      "anchor": {
+        "x": 196,
+        "y": 100,
+        "z": 208
+      },
+      "case_id": "layout_triptych",
+      "client_gate": null,
+      "index": 1,
+      "notes": "Three L-shaped same-ID groups each keep the diagonal air so the three installed Fusion layouts can be compared on the same geometry.",
+      "observations": [
+        {
+          "absolute": {
+            "x": 191,
+            "y": 101,
+            "z": 205
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:stone_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -5,
+            "y": 1,
+            "z": -3
+          },
+          "role": "FULL L corner",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 192,
+            "y": 101,
+            "z": 205
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:stone_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -4,
+            "y": 1,
+            "z": -3
+          },
+          "role": "FULL horizontal arm",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 191,
+            "y": 102,
+            "z": 205
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:stone_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -5,
+            "y": 2,
+            "z": -3
+          },
+          "role": "FULL vertical arm",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 192,
+            "y": 102,
+            "z": 205
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:air",
+          "expected_block_entity_snbt": null,
+          "placed": false,
+          "relative": {
+            "x": -4,
+            "y": 2,
+            "z": -3
+          },
+          "role": "FULL missing diagonal",
+          "route": "negative"
+        },
+        {
+          "absolute": {
+            "x": 195,
+            "y": 101,
+            "z": 205
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -1,
+            "y": 1,
+            "z": -3
+          },
+          "role": "SIMPLE L corner",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 196,
+            "y": 101,
+            "z": 205
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 0,
+            "y": 1,
+            "z": -3
+          },
+          "role": "SIMPLE horizontal arm",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 195,
+            "y": 102,
+            "z": 205
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -1,
+            "y": 2,
+            "z": -3
+          },
+          "role": "SIMPLE vertical arm",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 196,
+            "y": 102,
+            "z": 205
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:air",
+          "expected_block_entity_snbt": null,
+          "placed": false,
+          "relative": {
+            "x": 0,
+            "y": 2,
+            "z": -3
+          },
+          "role": "SIMPLE missing diagonal",
+          "route": "negative"
+        },
+        {
+          "absolute": {
+            "x": 199,
+            "y": 101,
+            "z": 205
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:gravity_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 3,
+            "y": 1,
+            "z": -3
+          },
+          "role": "PIECED L corner",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 200,
+            "y": 101,
+            "z": 205
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:gravity_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 4,
+            "y": 1,
+            "z": -3
+          },
+          "role": "PIECED horizontal arm",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 199,
+            "y": 102,
+            "z": 205
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:gravity_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 3,
+            "y": 2,
+            "z": -3
+          },
+          "role": "PIECED vertical arm",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 200,
+            "y": 102,
+            "z": 205
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:air",
+          "expected_block_entity_snbt": null,
+          "placed": false,
+          "relative": {
+            "x": 4,
+            "y": 2,
+            "z": -3
+          },
+          "role": "PIECED missing diagonal",
+          "route": "negative"
+        }
+      ],
+      "title": "FULL, SIMPLE, and PIECED corner selections"
+    },
+    {
+      "anchor": {
+        "x": 212,
+        "y": 100,
+        "z": 208
+      },
+      "case_id": "pane_topologies",
+      "client_gate": "Compare vertical caps and the mixed-ID boundary with the exact 3.4.5 client.",
+      "index": 2,
+      "notes": "The same fixture covers a two-layer straight stack, a mixed-ID L, and isolated T and cross networks with complete pane states.",
+      "observations": [
+        {
+          "absolute": {
+            "x": 208,
+            "y": 101,
+            "z": 204
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=false,north=false,south=true,waterlogged=false,west=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -4,
+            "y": 1,
+            "z": -4
+          },
+          "role": "straight lower north end",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 208,
+            "y": 101,
+            "z": 205
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=false,north=true,south=true,waterlogged=false,west=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -4,
+            "y": 1,
+            "z": -3
+          },
+          "role": "straight lower middle",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 208,
+            "y": 101,
+            "z": 206
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=false,north=true,south=false,waterlogged=false,west=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -4,
+            "y": 1,
+            "z": -2
+          },
+          "role": "straight lower south end",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 208,
+            "y": 102,
+            "z": 204
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=false,north=false,south=true,waterlogged=false,west=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -4,
+            "y": 2,
+            "z": -4
+          },
+          "role": "straight upper north end",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 208,
+            "y": 102,
+            "z": 205
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=false,north=true,south=true,waterlogged=false,west=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -4,
+            "y": 2,
+            "z": -3
+          },
+          "role": "straight upper middle",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 208,
+            "y": 102,
+            "z": 206
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=false,north=true,south=false,waterlogged=false,west=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -4,
+            "y": 2,
+            "z": -2
+          },
+          "role": "straight upper south end",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 212,
+            "y": 101,
+            "z": 204
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=false,north=false,south=true,waterlogged=false,west=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 0,
+            "y": 1,
+            "z": -4
+          },
+          "role": "mixed L north end",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 212,
+            "y": 101,
+            "z": 205
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=true,north=true,south=false,waterlogged=false,west=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 0,
+            "y": 1,
+            "z": -3
+          },
+          "role": "mixed L corner",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 213,
+            "y": 101,
+            "z": 205
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_dark_ethereal_pane[east=false,north=false,south=false,waterlogged=false,west=true]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 1,
+            "y": 1,
+            "z": -3
+          },
+          "role": "mixed L east end",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 211,
+            "y": 101,
+            "z": 209
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=true,north=false,south=false,waterlogged=false,west=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -1,
+            "y": 1,
+            "z": 1
+          },
+          "role": "T west end",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 212,
+            "y": 101,
+            "z": 208
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=false,north=false,south=true,waterlogged=false,west=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 0,
+            "y": 1,
+            "z": 0
+          },
+          "role": "T north end",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 212,
+            "y": 101,
+            "z": 209
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=true,north=true,south=false,waterlogged=false,west=true]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 0,
+            "y": 1,
+            "z": 1
+          },
+          "role": "T center",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 213,
+            "y": 101,
+            "z": 209
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=false,north=false,south=false,waterlogged=false,west=true]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          },
+          "role": "T east end",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 216,
+            "y": 101,
+            "z": 209
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=true,north=true,south=true,waterlogged=false,west=true]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 4,
+            "y": 1,
+            "z": 1
+          },
+          "role": "cross center",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 216,
+            "y": 101,
+            "z": 208
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=false,north=false,south=true,waterlogged=false,west=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 4,
+            "y": 1,
+            "z": 0
+          },
+          "role": "cross north end",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 217,
+            "y": 101,
+            "z": 209
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=false,north=false,south=false,waterlogged=false,west=true]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 5,
+            "y": 1,
+            "z": 1
+          },
+          "role": "cross east end",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 216,
+            "y": 101,
+            "z": 210
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=false,north=true,south=false,waterlogged=false,west=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 4,
+            "y": 1,
+            "z": 2
+          },
+          "role": "cross south end",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 215,
+            "y": 101,
+            "z": 209
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_ethereal_pane[east=true,north=false,south=false,waterlogged=false,west=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 3,
+            "y": 1,
+            "z": 1
+          },
+          "role": "cross west end",
+          "route": "custom"
+        }
+      ],
+      "title": "Pane topology, vertical caps, and mixed-ID boundary"
+    },
+    {
+      "anchor": {
+        "x": 228,
+        "y": 100,
+        "z": 208
+      },
+      "case_id": "slab_adjacency",
+      "client_gate": null,
+      "index": 3,
+      "notes": "Horizontal same-type runs terminate at doubles; the vertical pair touches across a top-to-bottom boundary; one isolated bottom slab is waterlogged.",
+      "observations": [
+        {
+          "absolute": {
+            "x": 224,
+            "y": 101,
+            "z": 206
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_slab[type=bottom,waterlogged=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -4,
+            "y": 1,
+            "z": -2
+          },
+          "role": "bottom run",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 225,
+            "y": 101,
+            "z": 206
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_slab[type=bottom,waterlogged=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -3,
+            "y": 1,
+            "z": -2
+          },
+          "role": "bottom run",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 226,
+            "y": 101,
+            "z": 206
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_slab[type=double,waterlogged=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -2,
+            "y": 1,
+            "z": -2
+          },
+          "role": "bottom-to-double boundary",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 228,
+            "y": 101,
+            "z": 206
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_slab[type=top,waterlogged=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 0,
+            "y": 1,
+            "z": -2
+          },
+          "role": "top run",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 229,
+            "y": 101,
+            "z": 206
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_slab[type=top,waterlogged=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 1,
+            "y": 1,
+            "z": -2
+          },
+          "role": "top run",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 230,
+            "y": 101,
+            "z": 206
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_slab[type=double,waterlogged=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 2,
+            "y": 1,
+            "z": -2
+          },
+          "role": "top-to-double boundary",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 232,
+            "y": 101,
+            "z": 206
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_slab[type=top,waterlogged=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 4,
+            "y": 1,
+            "z": -2
+          },
+          "role": "vertical lower top slab",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 232,
+            "y": 102,
+            "z": 206
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_slab[type=bottom,waterlogged=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 4,
+            "y": 2,
+            "z": -2
+          },
+          "role": "vertical upper bottom slab",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 232,
+            "y": 101,
+            "z": 210
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_slab[type=bottom,waterlogged=true]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 4,
+            "y": 1,
+            "z": 2
+          },
+          "role": "waterlogged bottom slab",
+          "route": "custom"
+        }
+      ],
+      "title": "Bottom, top, double, vertical, and waterlogged slabs"
+    },
+    {
+      "anchor": {
+        "x": 196,
+        "y": 100,
+        "z": 224
+      },
+      "case_id": "colorable_blocks",
+      "client_gate": "Confirm both cube routes remain untinted, both pane routes apply their four distinct tints, and all lit/unlit output matches the exact 3.4.5 client.",
+      "index": 4,
+      "notes": "Every route persists an explicit 24-bit Color; exact Fusion 1.3.12 tints pane faces only, while cube faces remain untinted. EmitLight agrees with its lit state.",
+      "observations": [
+        {
+          "absolute": {
+            "x": 192,
+            "y": 101,
+            "z": 222
+          },
+          "block_entity_snbt": "{Color:16711680,EmitLight:0b,EmitRedstone:0b,PassPlayer:0b,PassEntity:0b}",
+          "block_state": "glassential:colorable_glass[lit=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -4,
+            "y": 1,
+            "z": -2
+          },
+          "role": "clear cube red unlit",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 193,
+            "y": 101,
+            "z": 222
+          },
+          "block_entity_snbt": "{Color:65535,EmitLight:1b,EmitRedstone:0b,PassPlayer:0b,PassEntity:0b}",
+          "block_state": "glassential:colorable_glass[lit=true]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -3,
+            "y": 1,
+            "z": -2
+          },
+          "role": "clear cube cyan lit",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 195,
+            "y": 101,
+            "z": 222
+          },
+          "block_entity_snbt": "{Color:65280,EmitLight:0b,EmitRedstone:0b,PassPlayer:0b,PassEntity:0b}",
+          "block_state": "glassential:colorable_stained_glass[lit=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -1,
+            "y": 1,
+            "z": -2
+          },
+          "role": "stained cube green unlit",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 196,
+            "y": 101,
+            "z": 222
+          },
+          "block_entity_snbt": "{Color:16776960,EmitLight:1b,EmitRedstone:0b,PassPlayer:0b,PassEntity:0b}",
+          "block_state": "glassential:colorable_stained_glass[lit=true]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 0,
+            "y": 1,
+            "z": -2
+          },
+          "role": "stained cube yellow lit",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 198,
+            "y": 101,
+            "z": 222
+          },
+          "block_entity_snbt": "{Color:8388736,EmitLight:0b,EmitRedstone:0b,PassPlayer:0b,PassEntity:0b}",
+          "block_state": "glassential:colorable_glass_pane[east=false,north=false,south=true,waterlogged=false,west=false,lit=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 2,
+            "y": 1,
+            "z": -2
+          },
+          "role": "clear pane purple unlit",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 198,
+            "y": 101,
+            "z": 223
+          },
+          "block_entity_snbt": "{Color:16744448,EmitLight:1b,EmitRedstone:0b,PassPlayer:0b,PassEntity:0b}",
+          "block_state": "glassential:colorable_glass_pane[east=false,north=true,south=false,waterlogged=false,west=false,lit=true]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 2,
+            "y": 1,
+            "z": -1
+          },
+          "role": "clear pane orange lit",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 200,
+            "y": 101,
+            "z": 222
+          },
+          "block_entity_snbt": "{Color:255,EmitLight:0b,EmitRedstone:0b,PassPlayer:0b,PassEntity:0b}",
+          "block_state": "glassential:colorable_stained_glass_pane[east=false,north=false,south=true,waterlogged=false,west=false,lit=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 4,
+            "y": 1,
+            "z": -2
+          },
+          "role": "stained pane blue unlit",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 200,
+            "y": 101,
+            "z": 223
+          },
+          "block_entity_snbt": "{Color:16711935,EmitLight:1b,EmitRedstone:0b,PassPlayer:0b,PassEntity:0b}",
+          "block_state": "glassential:colorable_stained_glass_pane[east=false,north=true,south=false,waterlogged=false,west=false,lit=true]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 4,
+            "y": 1,
+            "z": -1
+          },
+          "role": "stained pane magenta lit",
+          "route": "custom"
+        }
+      ],
+      "title": "Four colorable routes with exact tint and light behavior"
+    },
+    {
+      "anchor": {
+        "x": 212,
+        "y": 100,
+        "z": 224
+      },
+      "case_id": "one_way_mimics",
+      "client_gate": "Orbit every opaque face and compare material/tint delegation plus malformed-to-iron normalization with the exact 3.4.5 client.",
+      "index": 5,
+      "notes": "Five one-way blocks cover horizontal and vertical opaque faces. Adjacent swatches lock static, texture-colored, and biome-tinted default-state mimics.",
+      "observations": [
+        {
+          "absolute": {
+            "x": 208,
+            "y": 101,
+            "z": 222
+          },
+          "block_entity_snbt": "{Mimic:\"minecraft:stone\"}",
+          "block_state": "glassential:one_way_glass[opaque_face=south]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -4,
+            "y": 1,
+            "z": -2
+          },
+          "role": "clear one-way south stone",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 208,
+            "y": 101,
+            "z": 224
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:stone",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -4,
+            "y": 1,
+            "z": 0
+          },
+          "role": "static stone mimic swatch",
+          "route": "stock"
+        },
+        {
+          "absolute": {
+            "x": 211,
+            "y": 101,
+            "z": 222
+          },
+          "block_entity_snbt": "{Mimic:\"minecraft:grass_block\"}",
+          "block_state": "glassential:one_way_glass[opaque_face=east]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -1,
+            "y": 1,
+            "z": -2
+          },
+          "role": "clear one-way east grass",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 211,
+            "y": 101,
+            "z": 224
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:grass_block[snowy=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -1,
+            "y": 1,
+            "z": 0
+          },
+          "role": "biome-tinted grass mimic swatch",
+          "route": "stock"
+        },
+        {
+          "absolute": {
+            "x": 214,
+            "y": 101,
+            "z": 222
+          },
+          "block_entity_snbt": "{Mimic:\"minecraft:oak_leaves\"}",
+          "block_state": "glassential:tinted_one_way_glass[opaque_face=up]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 2,
+            "y": 1,
+            "z": -2
+          },
+          "role": "tinted one-way up leaves",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 214,
+            "y": 101,
+            "z": 224
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:oak_leaves[distance=7,persistent=false,waterlogged=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 2,
+            "y": 1,
+            "z": 0
+          },
+          "role": "biome-tinted leaves mimic swatch",
+          "route": "stock"
+        },
+        {
+          "absolute": {
+            "x": 217,
+            "y": 101,
+            "z": 222
+          },
+          "block_entity_snbt": "{Mimic:\"minecraft:red_stained_glass\"}",
+          "block_state": "glassential:tinted_one_way_glass[opaque_face=north]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 5,
+            "y": 1,
+            "z": -2
+          },
+          "role": "tinted one-way north red glass",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 217,
+            "y": 101,
+            "z": 224
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:red_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 5,
+            "y": 1,
+            "z": 0
+          },
+          "role": "texture-colored glass mimic swatch",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 208,
+            "y": 101,
+            "z": 226
+          },
+          "block_entity_snbt": "{Mimic:\"not a valid id\"}",
+          "block_state": "glassential:one_way_glass[opaque_face=west]",
+          "expected_block_entity_snbt": "{Mimic:\"minecraft:iron_block\"}",
+          "placed": true,
+          "relative": {
+            "x": -4,
+            "y": 1,
+            "z": 2
+          },
+          "role": "malformed mimic canonicalizes to iron",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 208,
+            "y": 101,
+            "z": 228
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:iron_block",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -4,
+            "y": 1,
+            "z": 4
+          },
+          "role": "malformed-mimic iron fallback swatch",
+          "route": "stock"
+        }
+      ],
+      "title": "One-way orientation and stock mimic swatches"
+    },
+    {
+      "anchor": {
+        "x": 228,
+        "y": 100,
+        "z": 224
+      },
+      "case_id": "overrides_and_controls",
+      "client_gate": null,
+      "index": 6,
+      "notes": "The palette contains every exact vanilla cube override. The final row keeps representative Glassential and vanilla stock paths beside it.",
+      "observations": [
+        {
+          "absolute": {
+            "x": 223,
+            "y": 101,
+            "z": 220
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -5,
+            "y": 1,
+            "z": -4
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 225,
+            "y": 101,
+            "z": 220
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:tinted_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -3,
+            "y": 1,
+            "z": -4
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 227,
+            "y": 101,
+            "z": 220
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:white_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -1,
+            "y": 1,
+            "z": -4
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 229,
+            "y": 101,
+            "z": 220
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:orange_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 1,
+            "y": 1,
+            "z": -4
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 231,
+            "y": 101,
+            "z": 220
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:magenta_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 3,
+            "y": 1,
+            "z": -4
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 233,
+            "y": 101,
+            "z": 220
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:light_blue_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 5,
+            "y": 1,
+            "z": -4
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 223,
+            "y": 101,
+            "z": 222
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:yellow_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -5,
+            "y": 1,
+            "z": -2
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 225,
+            "y": 101,
+            "z": 222
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:lime_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -3,
+            "y": 1,
+            "z": -2
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 227,
+            "y": 101,
+            "z": 222
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:pink_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -1,
+            "y": 1,
+            "z": -2
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 229,
+            "y": 101,
+            "z": 222
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:gray_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 1,
+            "y": 1,
+            "z": -2
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 231,
+            "y": 101,
+            "z": 222
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:light_gray_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 3,
+            "y": 1,
+            "z": -2
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 233,
+            "y": 101,
+            "z": 222
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:cyan_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 5,
+            "y": 1,
+            "z": -2
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 223,
+            "y": 101,
+            "z": 224
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:purple_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -5,
+            "y": 1,
+            "z": 0
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 225,
+            "y": 101,
+            "z": 224
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:blue_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -3,
+            "y": 1,
+            "z": 0
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 227,
+            "y": 101,
+            "z": 224
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:brown_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -1,
+            "y": 1,
+            "z": 0
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 229,
+            "y": 101,
+            "z": 224
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:green_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 1,
+            "y": 1,
+            "z": 0
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 231,
+            "y": 101,
+            "z": 224
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:red_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 3,
+            "y": 1,
+            "z": 0
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 233,
+            "y": 101,
+            "z": 224
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:black_stained_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 5,
+            "y": 1,
+            "z": 0
+          },
+          "role": "exact vanilla cube override",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 223,
+            "y": 102,
+            "z": 220
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -5,
+            "y": 2,
+            "z": -4
+          },
+          "role": "same-ID vanilla override connection",
+          "route": "custom"
+        },
+        {
+          "absolute": {
+            "x": 223,
+            "y": 101,
+            "z": 227
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_door[facing=north,half=lower,hinge=left,open=false,powered=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -5,
+            "y": 1,
+            "z": 3
+          },
+          "role": "stock Glassential door lower",
+          "route": "stock"
+        },
+        {
+          "absolute": {
+            "x": 223,
+            "y": 102,
+            "z": 227
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_door[facing=north,half=upper,hinge=left,open=false,powered=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -5,
+            "y": 2,
+            "z": 3
+          },
+          "role": "stock Glassential door upper",
+          "route": "stock"
+        },
+        {
+          "absolute": {
+            "x": 225,
+            "y": 101,
+            "z": 227
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_trapdoor[facing=north,half=bottom,open=false,powered=false,waterlogged=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -3,
+            "y": 1,
+            "z": 3
+          },
+          "role": "stock Glassential trapdoor",
+          "route": "stock"
+        },
+        {
+          "absolute": {
+            "x": 227,
+            "y": 101,
+            "z": 227
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:glass_glowstone_lamp",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": -1,
+            "y": 1,
+            "z": 3
+          },
+          "role": "stock Glassential lamp",
+          "route": "stock"
+        },
+        {
+          "absolute": {
+            "x": 229,
+            "y": 101,
+            "z": 227
+          },
+          "block_entity_snbt": null,
+          "block_state": "glassential:clear_fluid_glass",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 1,
+            "y": 1,
+            "z": 3
+          },
+          "role": "stock empty clear-fluid glass",
+          "route": "stock"
+        },
+        {
+          "absolute": {
+            "x": 231,
+            "y": 101,
+            "z": 227
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:glass_pane[east=false,north=false,south=false,waterlogged=false,west=false]",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 3,
+            "y": 1,
+            "z": 3
+          },
+          "role": "stock vanilla pane",
+          "route": "stock"
+        },
+        {
+          "absolute": {
+            "x": 233,
+            "y": 101,
+            "z": 227
+          },
+          "block_entity_snbt": null,
+          "block_state": "minecraft:stone",
+          "expected_block_entity_snbt": null,
+          "placed": true,
+          "relative": {
+            "x": 5,
+            "y": 1,
+            "z": 3
+          },
+          "role": "stock opaque control",
+          "route": "stock"
+        }
+      ],
+      "title": "Eighteen vanilla overrides and stock-path controls"
+    }
+  ],
+  "counts": {
+    "block_entity_placements": 13,
+    "cells": 6,
+    "custom_route_placements": 69,
+    "glassential_pane_placements": 22,
+    "negative_space_observations": 3,
+    "observations": 83,
+    "placements": 80,
+    "stock_route_placements": 11,
+    "vanilla_override_placements": 20,
+    "waterlogged_placements": 1
+  },
+  "evidence": {
+    "all_the_mons": "1.2.0",
+    "fusion": {
+      "filename": "fusion-1.3.12-neoforge-mc1.21.1.jar",
+      "sha256": "17f5215648a98bcde4134577b013200dbf363273ae282449c51408ae8346f2fa",
+      "size_bytes": 923270,
+      "version": "1.3.12"
+    },
+    "glassential": {
+      "filename": "Glassential-renewed-1.21.1-3.4.5.jar",
+      "sha256": "1f0c8f7533bf3b2002575219ba795fd32a44cc5085c2710624ebbf69e6121471",
+      "size_bytes": 702249,
+      "version": "3.4.5"
+    },
+    "minecraft": "1.21.1"
+  },
+  "gallery": {
+    "dimension": "minecraft:overworld",
+    "floor_y": 100,
+    "pose": {
+      "pitch": 24,
+      "x": 212,
+      "y": 122,
+      "yaw": 180,
+      "z": 259
+    },
+    "region_max": {
+      "x": 235,
+      "y": 106,
+      "z": 231
+    },
+    "region_min": {
+      "x": 189,
+      "y": 100,
+      "z": 201
+    }
+  },
+  "schema": 3
+}

@@ -1,0 +1,545 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Immutable v* tag to resume after a safe publication failure
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  packages: write
+  pull-requests: read
+  attestations: write
+  id-token: write
+
+env:
+  RELEASE_TAG: ${{ github.event.inputs.release_tag || github.ref_name }}
+
+concurrency:
+  # Every version updates the same artifact-root maven-metadata.xml.
+  group: release-maven-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify tag, version, and main-branch identity
+        run: |
+          version="$(sed -n 's/^addon_version=//p' gradle.properties)"
+          test -n "${version}"
+          [[ "${version}" != *-SNAPSHOT ]]
+          [[ "${RELEASE_TAG}" =~ ^v[0-9A-Za-z][0-9A-Za-z.+-]*$ ]]
+          test "${RELEASE_TAG}" = "v${version}"
+          git fetch --force origin \
+            "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}"
+          test "$(git cat-file -t "refs/tags/${RELEASE_TAG}")" = tag
+          test "$(git rev-parse 'HEAD^{commit}')" = \
+            "$(git rev-parse "refs/tags/${RELEASE_TAG}^{commit}")"
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          git merge-base --is-ancestor HEAD refs/remotes/origin/main
+          echo "VERSION=${version}" >> "${GITHUB_ENV}"
+
+      - name: Require merged pull request and version introduction or increase
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          commit="$(git rev-parse HEAD)"
+          mapfile -t candidates < <(gh api \
+            -H 'Accept: application/vnd.github+json' \
+            "repos/${GITHUB_REPOSITORY}/commits/${commit}/pulls" \
+            --jq ".[] | select(.merged_at != null and .base.ref == \"main\" and .merge_commit_sha == \"${commit}\") | [.number, .base.sha] | @tsv")
+          test "${#candidates[@]}" -gt 0
+
+          cat > "${RUNNER_TEMP}/verify-version-increase.py" <<'PY'
+          import re
+          import sys
+
+          pattern = re.compile(
+              r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)"
+              r"(?:-([0-9A-Za-z.-]+))?(?:\+[0-9A-Za-z.-]+)?$"
+          )
+
+
+          def parse(value):
+              match = pattern.fullmatch(value)
+              if match is None:
+                  raise ValueError(f"not semantic version: {value}")
+              core = tuple(int(item) for item in match.group(1, 2, 3))
+              pre = match.group(4)
+              if pre is None:
+                  return core, None
+              identifiers = []
+              for item in pre.split("."):
+                  if not item:
+                      raise ValueError(f"empty prerelease identifier: {value}")
+                  identifiers.append(int(item) if item.isdigit() else item)
+              return core, identifiers
+
+
+          def prerelease_greater(new, old):
+              if old is None:
+                  return False
+              if new is None:
+                  return True
+              for left, right in zip(new, old):
+                  if left == right:
+                      continue
+                  if isinstance(left, int) and isinstance(right, str):
+                      return False
+                  if isinstance(left, str) and isinstance(right, int):
+                      return True
+                  return left > right
+              return len(new) > len(old)
+
+
+          new_value, old_value, status = sys.argv[1:]
+          new_core, new_pre = parse(new_value)
+          if status == "added" and not old_value:
+              raise SystemExit(0)
+          old_core, old_pre = parse(old_value)
+          if new_core > old_core or (
+              new_core == old_core and prerelease_greater(new_pre, old_pre)
+          ):
+              raise SystemExit(0)
+          raise SystemExit(
+              f"addon_version did not increase: {old_value} -> {new_value}"
+          )
+          PY
+
+          reviewed_pr=''
+          for candidate in "${candidates[@]}"; do
+            IFS=$'\t' read -r number base_sha <<< "${candidate}"
+            status="$(gh api --paginate \
+              "repos/${GITHUB_REPOSITORY}/pulls/${number}/files" \
+              --jq '.[] | select(.filename == "gradle.properties") | .status' \
+              | head -n 1)"
+            if [[ "${status}" != added && "${status}" != modified ]]; then
+              continue
+            fi
+            old_version=''
+            if [[ "${status}" == modified ]]; then
+              old_version="$(git show "${base_sha}:gradle.properties" \
+                | sed -n 's/^addon_version=//p')"
+              test -n "${old_version}"
+            fi
+            if python3 "${RUNNER_TEMP}/verify-version-increase.py" \
+              "${VERSION}" "${old_version}" "${status}"; then
+              reviewed_pr="${number}"
+              break
+            fi
+          done
+          test -n "${reviewed_pr}"
+          echo "RELEASE_PR=${reviewed_pr}" >> "${GITHUB_ENV}"
+
+      - name: Check out exact BlueMap backport
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: jan-guenter/BlueMap
+          ref: 9be321df995a1103808621d529eb72773e719d4d
+          path: .ci/bluemap
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Set up Java 21
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+
+      - name: Set up Gradle 9.6.1
+        uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
+        with:
+          gradle-version: '9.6.1'
+
+      - name: Acquire exact ephemeral runtime input
+        run: |
+          input_dir="${RUNNER_TEMP}/glassential"
+          mkdir -p "${input_dir}"
+          curl --fail --location --retry 3 --retry-all-errors \
+            --output "${input_dir}/Glassential-renewed-1.21.1-3.4.5.jar" \
+            "https://cdn.modrinth.com/data/kc9FSsYx/versions/ZU9ErRM9/Glassential-renewed-1.21.1-3.4.5.jar"
+          curl --fail --location --retry 3 --retry-all-errors \
+            --output "${input_dir}/fusion-1.3.12-neoforge-mc1.21.1.jar" \
+            "https://cdn.modrinth.com/data/p19vrgc2/versions/6Oxgpgr9/fusion-1.3.12-neoforge-mc1.21.1.jar"
+          test "$(stat -c %s "${input_dir}/Glassential-renewed-1.21.1-3.4.5.jar")" \
+            -eq 702249
+          test "$(stat -c %s "${input_dir}/fusion-1.3.12-neoforge-mc1.21.1.jar")" \
+            -eq 923270
+          (
+            cd "${input_dir}"
+            sha256sum --check <<'SHA256SUMS'
+          1f0c8f7533bf3b2002575219ba795fd32a44cc5085c2710624ebbf69e6121471  Glassential-renewed-1.21.1-3.4.5.jar
+          17f5215648a98bcde4134577b013200dbf363273ae282449c51408ae8346f2fa  fusion-1.3.12-neoforge-mc1.21.1.jar
+          SHA256SUMS
+          )
+
+      - name: Build, test, and verify the release twice
+        run: |
+          input_dir="${RUNNER_TEMP}/glassential"
+          python3 gallery/generate.py --check \
+            --glassential-jar="${input_dir}/Glassential-renewed-1.21.1-3.4.5.jar" \
+            --fusion-jar="${input_dir}/fusion-1.3.12-neoforge-mc1.21.1.jar"
+          python3 -m json.tool provenance/upstreams.json >/dev/null
+          (cd gallery && sha256sum --check SHA256SUMS)
+          python3 -m unittest discover -s tools/tests -p 'test_*.py'
+          python3 -m unittest discover -s gallery/tests -p 'test_*.py'
+          build_all() {
+            gradle --no-daemon \
+              -PbluemapSourcePath=.ci/bluemap \
+              -PglassentialJar="${input_dir}/Glassential-renewed-1.21.1-3.4.5.jar" \
+              -PfusionJar="${input_dir}/fusion-1.3.12-neoforge-mc1.21.1.jar" \
+              clean check build generatePomFileForAddonPublication \
+              generateMetadataFileForAddonPublication verifyPinnedArtifacts \
+              verifyPublicationMetadata
+          }
+          build_all
+          first="${RUNNER_TEMP}/first-build"
+          mkdir -p "${first}"
+          cp "build/libs/bluemap-glassential-addon-${VERSION}.jar" \
+            "${first}/addon.jar"
+          cp "build/libs/bluemap-glassential-addon-${VERSION}-sources.jar" \
+            "${first}/sources.jar"
+          cp build/publications/addon/pom-default.xml "${first}/pom.xml"
+          cp build/publications/addon/module.json "${first}/module.json"
+          build_all
+          cmp "${first}/addon.jar" \
+            "build/libs/bluemap-glassential-addon-${VERSION}.jar"
+          cmp "${first}/sources.jar" \
+            "build/libs/bluemap-glassential-addon-${VERSION}-sources.jar"
+          cmp "${first}/pom.xml" build/publications/addon/pom-default.xml
+          cmp "${first}/module.json" build/publications/addon/module.json
+
+          test "$(stat -c %s "build/libs/bluemap-glassential-addon-${VERSION}.jar")" \
+            -eq 162440
+          test "$(stat -c %s "build/libs/bluemap-glassential-addon-${VERSION}-sources.jar")" \
+            -eq 79193
+          test "$(stat -c %s build/publications/addon/pom-default.xml)" \
+            -eq 1355
+          test "$(stat -c %s build/publications/addon/module.json)" \
+            -eq 2847
+          sha256sum --check <<SHA256SUMS
+          a956e62f7b843391917b861c831545b07af43ccceaa0bb84465e7e0b14c49780  build/libs/bluemap-glassential-addon-${VERSION}.jar
+          b2cc577972e8dec52c0ce1ea2a4c0321ec209c96b0476fab340f8bbc0125db9b  build/libs/bluemap-glassential-addon-${VERSION}-sources.jar
+          ac64d9ec689cf7be1826a62e1dfb347fb63b4d04724b2ab11d0cb44f5dc3e7e7  build/publications/addon/pom-default.xml
+          f96bdd237f750d581fc79069814ded305851b76169e2a6e87b73d47eec057553  build/publications/addon/module.json
+          SHA256SUMS
+
+      - name: Prepare release bundle
+        run: |
+          mkdir release
+          cp "build/libs/bluemap-glassential-addon-${VERSION}.jar" release/
+          cp "build/libs/bluemap-glassential-addon-${VERSION}-sources.jar" release/
+          cp build/publications/addon/pom-default.xml \
+            "release/bluemap-glassential-addon-${VERSION}.pom"
+          cp build/publications/addon/module.json \
+            "release/bluemap-glassential-addon-${VERSION}.module.json"
+          cd release
+          sha256sum -- ./* > SHA256SUMS
+          test "$(find . -maxdepth 1 -type f | wc -l)" -eq 5
+          sha256sum --check SHA256SUMS
+          test "$(stat -c %s SHA256SUMS)" -eq 464
+          test "$(sha256sum SHA256SUMS | cut -d ' ' -f 1)" = \
+            ac35389832fbb972f80e6c9c86244445ab5b7a2576672191becce7514a36566f
+
+      - name: Inspect immutable Maven version
+        id: maven
+        env:
+          MAVEN_ACTOR: ${{ github.actor }}
+          MAVEN_TOKEN: ${{ github.token }}
+        run: |
+          cat > "${RUNNER_TEMP}/verify-maven.py" <<'PY'
+          import base64
+          import hashlib
+          import os
+          from pathlib import Path
+          import sys
+          import urllib.error
+          import urllib.request
+          import xml.etree.ElementTree as ET
+
+          version = os.environ["VERSION"]
+          actor = os.environ["MAVEN_ACTOR"]
+          token = os.environ["MAVEN_TOKEN"]
+          base = (
+              "https://maven.pkg.github.com/jan-guenter/"
+              "bluemap-glassential-addon/io/github/jan-guenter/"
+              "bluemap-glassential-addon"
+          )
+          version_base = f"{base}/{version}"
+          files = (
+              (
+                  Path(f"build/libs/bluemap-glassential-addon-{version}.jar"),
+                  f"bluemap-glassential-addon-{version}.jar",
+              ),
+              (
+                  Path(
+                      "build/libs/"
+                      f"bluemap-glassential-addon-{version}-sources.jar"
+                  ),
+                  f"bluemap-glassential-addon-{version}-sources.jar",
+              ),
+              (
+                  Path("build/publications/addon/pom-default.xml"),
+                  f"bluemap-glassential-addon-{version}.pom",
+              ),
+              (
+                  Path("build/publications/addon/module.json"),
+                  f"bluemap-glassential-addon-{version}.module",
+              ),
+          )
+          authorization = base64.b64encode(
+              f"{actor}:{token}".encode("utf-8")
+          ).decode("ascii")
+
+
+          def fetch(url):
+              request = urllib.request.Request(
+                  url,
+                  headers={"Authorization": f"Basic {authorization}"},
+              )
+              try:
+                  with urllib.request.urlopen(request) as response:
+                      return response.read()
+              except urllib.error.HTTPError as error:
+                  if error.code == 404:
+                      return None
+                  raise RuntimeError(
+                      f"GitHub Packages returned HTTP {error.code} for {url}"
+                  ) from error
+
+
+          def verify_sidecars(url, content, *, required):
+              for algorithm in ("sha1", "md5"):
+                  sidecar = fetch(f"{url}.{algorithm}")
+                  if sidecar is None:
+                      if required:
+                          raise RuntimeError(
+                              f"Missing {algorithm} sidecar for {url}"
+                          )
+                      continue
+                  if not required:
+                      raise RuntimeError(
+                          f"Orphaned {algorithm} sidecar for absent {url}"
+                      )
+                  expected = hashlib.new(algorithm, content).hexdigest()
+                  actual = sidecar.decode("ascii").strip().lower()
+                  if actual != expected:
+                      raise RuntimeError(
+                          f"Invalid {algorithm} sidecar for {url}"
+                      )
+
+
+          present = 0
+          missing = 0
+          for local_path, remote_name in files:
+              local = local_path.read_bytes()
+              remote_url = f"{version_base}/{remote_name}"
+              remote = fetch(remote_url)
+              if remote is None:
+                  verify_sidecars(remote_url, b"", required=False)
+                  missing += 1
+                  continue
+              if remote != local:
+                  raise RuntimeError(
+                      f"Published Maven bytes differ for {remote_name}"
+                  )
+              verify_sidecars(remote_url, remote, required=True)
+              present += 1
+
+          metadata_url = f"{base}/maven-metadata.xml"
+          metadata = fetch(metadata_url)
+          metadata_has_version = False
+          if metadata is not None:
+              verify_sidecars(metadata_url, metadata, required=True)
+              versions = [
+                  element.text
+                  for element in ET.fromstring(metadata).iter()
+                  if element.tag.rsplit("}", 1)[-1] == "version"
+              ]
+              count = versions.count(version)
+              if count > 1:
+                  raise RuntimeError("Duplicate version in Maven metadata")
+              metadata_has_version = count == 1
+          else:
+              verify_sidecars(metadata_url, b"", required=False)
+
+          state = sys.argv[1]
+          if present == len(files) and missing == 0 and metadata_has_version:
+              observed = "present"
+          elif present == 0 and missing == len(files) and not metadata_has_version:
+              observed = "absent"
+          else:
+              raise RuntimeError(
+                  "Immutable Maven version is partial or inconsistent"
+              )
+
+          if state == "inspect":
+              print(observed)
+          elif state == "present" and observed != "present":
+              raise RuntimeError("Maven publication is not complete")
+          elif state != "present":
+              raise RuntimeError(f"Unknown verification state: {state}")
+          PY
+
+          state="$(python3 "${RUNNER_TEMP}/verify-maven.py" inspect)"
+          case "${state}" in
+            absent)
+              echo 'publish=true' >> "${GITHUB_OUTPUT}"
+              ;;
+            present)
+              echo 'publish=false' >> "${GITHUB_OUTPUT}"
+              echo 'The complete immutable Maven version already exists and is exact.'
+              ;;
+            *)
+              echo "Unexpected Maven verification state: ${state}" >&2
+              exit 1
+              ;;
+          esac
+
+      - name: Create or refresh draft GitHub release
+        id: github_release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          notes='Owner-accepted exact All the Mons 1.2.0 prerelease for Glassential Renewed 3.4.5, Fusion 1.3.12, and the Java 21 BlueMap 5.22 backport. It covers the locked 49 routed block IDs and 471 legal states. Activation requires the byte-exact operator-installed Glassential and Fusion resources; neither artifact is distributed. This is not a generic compatibility or production-deployment claim.'
+          release_kind=()
+          if [[ "${VERSION}" == *-* ]]; then
+            release_kind+=(--prerelease)
+          else
+            release_kind+=(--latest)
+          fi
+          if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
+            is_draft="$(gh release view "${RELEASE_TAG}" \
+              --json isDraft --jq '.isDraft')"
+            if [[ "${is_draft}" == true ]]; then
+              gh release edit "${RELEASE_TAG}" \
+                --draft \
+                "${release_kind[@]}" \
+                --title "BlueMap Glassential Add-on ${VERSION}" \
+                --notes "${notes}" \
+                --verify-tag
+              gh release upload "${RELEASE_TAG}" release/* --clobber
+              echo 'already_published=false' >> "${GITHUB_OUTPUT}"
+            else
+              echo 'already_published=true' >> "${GITHUB_OUTPUT}"
+              echo 'The GitHub release is already published; verifying it without mutation.'
+            fi
+          else
+            gh release create "${RELEASE_TAG}" release/* \
+              "${release_kind[@]}" \
+              --draft \
+              --notes "${notes}" \
+              --title "BlueMap Glassential Add-on ${VERSION}" \
+              --verify-tag
+            echo 'already_published=false' >> "${GITHUB_OUTPUT}"
+          fi
+
+          expected=(
+            SHA256SUMS
+            "bluemap-glassential-addon-${VERSION}-sources.jar"
+            "bluemap-glassential-addon-${VERSION}.jar"
+            "bluemap-glassential-addon-${VERSION}.module.json"
+            "bluemap-glassential-addon-${VERSION}.pom"
+          )
+          mapfile -t actual < <(gh release view "${RELEASE_TAG}" \
+            --json assets --jq '.assets[].name' | LC_ALL=C sort)
+          diff -u \
+            <(printf '%s\n' "${expected[@]}" | LC_ALL=C sort) \
+            <(printf '%s\n' "${actual[@]}")
+          downloaded="${RUNNER_TEMP}/github-release-assets"
+          mkdir -p "${downloaded}"
+          gh release download "${RELEASE_TAG}" --dir "${downloaded}"
+          for asset in release/*; do
+            cmp "${asset}" "${downloaded}/$(basename "${asset}")"
+          done
+
+      - name: Attest release JARs
+        if: steps.github_release.outputs.already_published != 'true'
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
+        with:
+          subject-path: release/*.jar
+
+      - name: Publish Maven package
+        if: steps.maven.outputs.publish == 'true'
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gradle --no-daemon \
+            -PbluemapSourcePath=.ci/bluemap \
+            publishAddonPublicationToGitHubPackagesRepository
+
+      - name: Verify published Maven bytes and sidecars
+        env:
+          MAVEN_ACTOR: ${{ github.actor }}
+          MAVEN_TOKEN: ${{ github.token }}
+        run: |
+          for attempt in {1..12}; do
+            if python3 "${RUNNER_TEMP}/verify-maven.py" present; then
+              exit 0
+            fi
+            if [[ "${attempt}" == 12 ]]; then
+              exit 1
+            fi
+            sleep 5
+          done
+
+      - name: Reverify and publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          expected=(
+            SHA256SUMS
+            "bluemap-glassential-addon-${VERSION}-sources.jar"
+            "bluemap-glassential-addon-${VERSION}.jar"
+            "bluemap-glassential-addon-${VERSION}.module.json"
+            "bluemap-glassential-addon-${VERSION}.pom"
+          )
+          mapfile -t actual < <(gh release view "${RELEASE_TAG}" \
+            --json assets --jq '.assets[].name' | LC_ALL=C sort)
+          diff -u \
+            <(printf '%s\n' "${expected[@]}" | LC_ALL=C sort) \
+            <(printf '%s\n' "${actual[@]}")
+          downloaded="${RUNNER_TEMP}/final-github-release-assets"
+          mkdir -p "${downloaded}"
+          gh release download "${RELEASE_TAG}" --dir "${downloaded}"
+          for asset in release/*; do
+            cmp "${asset}" "${downloaded}/$(basename "${asset}")"
+          done
+
+          is_draft="$(gh release view "${RELEASE_TAG}" \
+            --json isDraft --jq '.isDraft')"
+          if [[ "${is_draft}" != true ]]; then
+            is_prerelease="$(gh release view "${RELEASE_TAG}" \
+              --json isPrerelease --jq '.isPrerelease')"
+            if [[ "${VERSION}" == *-* ]]; then
+              test "${is_prerelease}" = true
+            else
+              test "${is_prerelease}" = false
+            fi
+            echo 'The exact GitHub release is already public.'
+          elif [[ "${VERSION}" == *-* ]]; then
+            gh release edit "${RELEASE_TAG}" --draft=false --prerelease
+          else
+            gh release edit "${RELEASE_TAG}" --draft=false --latest
+          fi

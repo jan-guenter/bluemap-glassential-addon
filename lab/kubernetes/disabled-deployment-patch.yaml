@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft
+  namespace: bluemap-sophisticated-staging
+spec:
+  replicas: 0
+  template:
+    metadata:
+      annotations:
+        bluemap.guenter.cloud/glassential-mode: "exact-profile-disabled-control"
+    spec:
+      containers:
+        - name: minecraft
+          env:
+            - name: BLUEMAP_GLASSENTIAL_DISABLED_PROFILES
+              value: glassential-fusion-3.4.5-1.3.12

@@ -1,0 +1,8 @@
+{
+  "id": "bluemap_glassential",
+  "name": "BlueMap Glassential Add-on",
+  "entrypoint": "io.github.janguenter.bluemap.glassential.BlueMapGlassentialAddon",
+  "version": "${version}",
+  "dependencies": [],
+  "soft-dependencies": []
+}
