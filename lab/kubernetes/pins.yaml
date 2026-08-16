@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bluemap-glassential-staging-pins
+  namespace: bluemap-sophisticated-staging
+  labels:
+    app.kubernetes.io/part-of: bluemap-sophisticated-staging
+    app.kubernetes.io/component: glassential
+data:
+  server-archive-size: "1055896389"
+  server-archive-sha256: "de112ed8d79b3ff027e399a5108b706f6a2db3be74b15d0db6f6b9d6ac268e6c"
+  bluemap-size: "6467235"
+  bluemap-sha256: "749f7647fa29764cea113114a7ab3259271bab3da22720989f2bd9fd1f3ba150"
+  glassential-size: "702249"
+  glassential-sha256: "1f0c8f7533bf3b2002575219ba795fd32a44cc5085c2710624ebbf69e6121471"
+  fusion-size: "923270"
+  fusion-sha256: "17f5215648a98bcde4134577b013200dbf363273ae282449c51408ae8346f2fa"
+  addon-size: "162440"
+  addon-sha256: "a956e62f7b843391917b861c831545b07af43ccceaa0bb84465e7e0b14c49780"
+  gallery-size: "10655"
+  gallery-sha256: "847067eab454eb646300c5f08887c6172de952f796dd090c7ab84d63aae304f0"

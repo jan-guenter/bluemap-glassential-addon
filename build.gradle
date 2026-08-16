@@ -1,0 +1,468 @@
+// SPDX-License-Identifier: MIT
+
+plugins {
+    id 'java-library'
+    id 'checkstyle'
+    id 'maven-publish'
+}
+
+group = addon_group
+version = addon_version
+
+base {
+    archivesName = artifact_id
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    withSourcesJar()
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = uri('https://repo.bluecolored.de/releases')
+        content { includeGroupByRegex('de\\.bluecolored.*') }
+    }
+}
+
+dependencies {
+    compileOnly "de.bluecolored:bluemap-core:${bluemap_version}"
+    compileOnly 'org.jetbrains:annotations:23.0.0'
+
+    testImplementation "de.bluecolored:bluemap-core:${bluemap_version}"
+    testImplementation 'org.jetbrains:annotations:23.0.0'
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 21
+    options.compilerArgs.addAll(['-Xlint:all', '-Werror'])
+}
+
+tasks.withType(AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+tasks.named('test', Test).configure {
+    useJUnitPlatform()
+    def glassentialJar = providers.gradleProperty('glassentialJar')
+    def fusionJar = providers.gradleProperty('fusionJar')
+    if (glassentialJar.isPresent()) {
+        systemProperty 'glassentialJar', glassentialJar.get()
+    }
+    if (fusionJar.isPresent()) {
+        systemProperty 'fusionJar', fusionJar.get()
+    }
+}
+
+tasks.named('processResources').configure {
+    inputs.property('version', project.version)
+    filesMatching('bluemap.addon.json') {
+        expand(version: project.version)
+    }
+}
+
+checkstyle {
+    toolVersion = '10.18.2'
+    configFile = file('config/checkstyle/checkstyle.xml')
+}
+
+tasks.withType(Checkstyle).configureEach {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes(
+                'Automatic-Module-Name': 'io.github.janguenter.bluemap.glassential',
+                'Implementation-Title': addon_name,
+                'Implementation-Version': project.version.toString()
+        )
+    }
+    from('LICENSE') {
+        into 'META-INF'
+        rename { 'LICENSE-bluemap-glassential-addon' }
+    }
+    from('LICENSE-BlueMap') {
+        into 'META-INF'
+    }
+    from('NOTICE.md') {
+        into 'META-INF'
+        rename { 'NOTICE-bluemap-glassential-addon.md' }
+    }
+    from('THIRD_PARTY.md') {
+        into 'META-INF'
+        rename { 'THIRD_PARTY-bluemap-glassential-addon.md' }
+    }
+    from('provenance/upstreams.json') {
+        into 'META-INF/bluemap-glassential'
+    }
+}
+
+tasks.named('sourcesJar', Jar).configure {
+    from('LICENSE') {
+        into 'META-INF'
+        rename { 'LICENSE-bluemap-glassential-addon' }
+    }
+    from('LICENSE-BlueMap') {
+        into 'META-INF'
+    }
+    from('NOTICE.md') {
+        into 'META-INF'
+        rename { 'NOTICE-bluemap-glassential-addon.md' }
+    }
+    from('THIRD_PARTY.md') {
+        into 'META-INF'
+        rename { 'THIRD_PARTY-bluemap-glassential-addon.md' }
+    }
+    from('provenance/upstreams.json') {
+        into 'META-INF/bluemap-glassential'
+    }
+}
+
+def productionJar = tasks.named('jar', Jar).flatMap { it.archiveFile }
+def publishedSourcesJar = tasks.named('sourcesJar', Jar).flatMap { it.archiveFile }
+tasks.register('verifyProductionJar') {
+    dependsOn tasks.named('jar')
+    inputs.file(productionJar)
+
+    doLast {
+        def jarFile = inputs.files.singleFile
+        def zip = new java.util.zip.ZipFile(jarFile)
+        try {
+            def allEntries = zip.entries().collect { it.name }
+            def entries = allEntries.findAll { !it.endsWith('/') }
+            def required = [
+                    'bluemap.addon.json',
+                    'assets/bluemap_glassential/blockstates/fusion_model.json',
+                    'bluemap-glassential/profiles/exact-artifacts.json',
+                    'bluemap-glassential/profiles/glassential/3.4.5-fusion-1.3.12/profile.json',
+                    'bluemap-glassential/profiles/glassential/3.4.5-fusion-1.3.12/definitions.tsv',
+                    'bluemap-glassential/profiles/glassential/3.4.5-fusion-1.3.12/direct-models.tsv',
+                    'bluemap-glassential/profiles/glassential/3.4.5-fusion-1.3.12/required-resources.tsv',
+                    'bluemap-glassential/profiles/glassential/3.4.5-fusion-1.3.12/textures.tsv',
+                    'bluemap-glassential/profiles/glassential/3.4.5-fusion-1.3.12/host-resources.tsv',
+                    'META-INF/LICENSE-bluemap-glassential-addon',
+                    'META-INF/LICENSE-BlueMap',
+                    'META-INF/NOTICE-bluemap-glassential-addon.md',
+                    'META-INF/THIRD_PARTY-bluemap-glassential-addon.md',
+                    'META-INF/bluemap-glassential/upstreams.json'
+            ]
+            def missing = required.findAll { !entries.contains(it) }
+            if (!missing.isEmpty()) {
+                throw new GradleException("Production JAR is missing: ${missing}")
+            }
+            def expectedProfileEntries = required.findAll {
+                it.startsWith('bluemap-glassential/profiles/')
+            }.toSet()
+            def expectedProfilePaths = expectedProfileEntries + Set.of(
+                    'bluemap-glassential/profiles/',
+                    'bluemap-glassential/profiles/glassential/',
+                    'bluemap-glassential/profiles/glassential/3.4.5-fusion-1.3.12/'
+            )
+            def profileEntries = allEntries.findAll {
+                it.startsWith('bluemap-glassential/profiles/')
+            }.toSet()
+            if (profileEntries != expectedProfilePaths) {
+                throw new GradleException(
+                        "Production JAR profile roster changed: ${profileEntries}"
+                )
+            }
+            def addon = new groovy.json.JsonSlurper().parseText(
+                    zip.getInputStream(zip.getEntry('bluemap.addon.json')).getText('UTF-8')
+            )
+            if (addon.id != addon_id
+                    || addon.name != addon_name
+                    || addon.entrypoint != 'io.github.janguenter.bluemap.glassential.BlueMapGlassentialAddon'
+                    || addon.version != project.version.toString()
+                    || addon.dependencies != []
+                    || addon['soft-dependencies'] != []) {
+                throw new GradleException('BlueMap add-on metadata mismatch')
+            }
+            def allowedProjectAssets = Set.of(
+                    'assets/bluemap_glassential/blockstates/fusion_model.json'
+            )
+            def projectAssets = entries.findAll {
+                it.startsWith('assets/bluemap_glassential/')
+            }.toSet()
+            if (projectAssets != allowedProjectAssets) {
+                throw new GradleException(
+                        "Production JAR project asset roster changed: ${projectAssets}"
+                )
+            }
+            def packagedUpstreams = zip.getInputStream(
+                    zip.getEntry('META-INF/bluemap-glassential/upstreams.json')
+            ).readAllBytes()
+            if (!java.util.Arrays.equals(
+                    packagedUpstreams,
+                    file('provenance/upstreams.json').bytes
+            )) {
+                throw new GradleException('Production JAR provenance payload drifted')
+            }
+            def forbidden = entries.findAll {
+                it.endsWith('.jar')
+                        || it.endsWith('.zip')
+                        || it.endsWith('.png')
+                        || it.endsWith('.mcmeta')
+                        || (it.endsWith('.class')
+                        && !it.startsWith('io/github/janguenter/bluemap/glassential/'))
+                        || it == 'META-INF/neoforge.mods.toml'
+                        || it == 'fabric.mod.json'
+                        || it.endsWith('.mixins.json')
+                        || it.startsWith('assets/glassential/')
+                        || it.startsWith('assets/fusion/')
+                        || it.startsWith('data/')
+                        || (it.startsWith('assets/')
+                        && !it.startsWith('assets/bluemap_glassential/'))
+                        || it.startsWith('com/supermartijn642/')
+                        || it.startsWith('com/github/bigenergy/glassential/')
+                        || it.startsWith('earth/terrarium/')
+                        || it.startsWith('de/bluecolored/')
+                        || it.startsWith('de/maxhenkel/')
+                        || it.startsWith('net/minecraft/')
+                        || it.startsWith('net/neoforged/')
+            }
+            if (!forbidden.isEmpty()) {
+                throw new GradleException("Production JAR contains forbidden entries: ${forbidden}")
+            }
+        } finally {
+            zip.close()
+        }
+    }
+}
+
+tasks.register('verifySourcesJar') {
+    dependsOn tasks.named('sourcesJar')
+    inputs.file(publishedSourcesJar)
+
+    doLast {
+        def jarFile = inputs.files.singleFile
+        def zip = new java.util.zip.ZipFile(jarFile)
+        try {
+            def allEntries = zip.entries().collect { it.name }
+            def entries = allEntries.findAll { !it.endsWith('/') }
+            def required = [
+                    'io/github/janguenter/bluemap/glassential/BlueMapGlassentialAddon.java',
+                    'io/github/janguenter/bluemap/glassential/adapter/bluemap522/GlassentialRenderer.java',
+                    'bluemap.addon.json',
+                    'bluemap-glassential/profiles/exact-artifacts.json',
+                    'bluemap-glassential/profiles/glassential/3.4.5-fusion-1.3.12/profile.json',
+                    'bluemap-glassential/profiles/glassential/3.4.5-fusion-1.3.12/definitions.tsv',
+                    'bluemap-glassential/profiles/glassential/3.4.5-fusion-1.3.12/direct-models.tsv',
+                    'bluemap-glassential/profiles/glassential/3.4.5-fusion-1.3.12/required-resources.tsv',
+                    'bluemap-glassential/profiles/glassential/3.4.5-fusion-1.3.12/textures.tsv',
+                    'bluemap-glassential/profiles/glassential/3.4.5-fusion-1.3.12/host-resources.tsv',
+                    'META-INF/LICENSE-bluemap-glassential-addon',
+                    'META-INF/LICENSE-BlueMap',
+                    'META-INF/NOTICE-bluemap-glassential-addon.md',
+                    'META-INF/THIRD_PARTY-bluemap-glassential-addon.md',
+                    'META-INF/bluemap-glassential/upstreams.json'
+            ]
+            def missing = required.findAll { !entries.contains(it) }
+            if (!missing.isEmpty()) {
+                throw new GradleException("Sources JAR is missing: ${missing}")
+            }
+            def expectedProfileEntries = required.findAll {
+                it.startsWith('bluemap-glassential/profiles/')
+            }.toSet()
+            def expectedProfilePaths = expectedProfileEntries + Set.of(
+                    'bluemap-glassential/profiles/',
+                    'bluemap-glassential/profiles/glassential/',
+                    'bluemap-glassential/profiles/glassential/3.4.5-fusion-1.3.12/'
+            )
+            def profileEntries = allEntries.findAll {
+                it.startsWith('bluemap-glassential/profiles/')
+            }.toSet()
+            if (profileEntries != expectedProfilePaths) {
+                throw new GradleException(
+                        "Sources JAR profile roster changed: ${profileEntries}"
+                )
+            }
+            def projectJava = entries.findAll { it.endsWith('.java') }
+            def foreignJava = projectJava.findAll {
+                !it.startsWith('io/github/janguenter/bluemap/glassential/')
+            }
+            def sourceAddonText = zip.getInputStream(
+                    zip.getEntry('bluemap.addon.json')
+            ).getText('UTF-8')
+            def sourceAddon = new groovy.json.JsonSlurper().parseText(sourceAddonText)
+            if (sourceAddon.id != addon_id
+                    || sourceAddon.name != addon_name
+                    || sourceAddon.entrypoint != 'io.github.janguenter.bluemap.glassential.BlueMapGlassentialAddon'
+                    || sourceAddon.version != '${version}'
+                    || sourceAddon.dependencies != []
+                    || sourceAddon['soft-dependencies'] != []
+                    || sourceAddonText.count('${') != 1) {
+                throw new GradleException('Sources JAR add-on template mismatch')
+            }
+            def allowedProjectAssets = Set.of(
+                    'assets/bluemap_glassential/blockstates/fusion_model.json'
+            )
+            def projectAssets = entries.findAll {
+                it.startsWith('assets/bluemap_glassential/')
+            }.toSet()
+            if (projectAssets != allowedProjectAssets) {
+                throw new GradleException(
+                        "Sources JAR project asset roster changed: ${projectAssets}"
+                )
+            }
+            def packagedUpstreams = zip.getInputStream(
+                    zip.getEntry('META-INF/bluemap-glassential/upstreams.json')
+            ).readAllBytes()
+            if (!java.util.Arrays.equals(
+                    packagedUpstreams,
+                    file('provenance/upstreams.json').bytes
+            )) {
+                throw new GradleException('Sources JAR provenance payload drifted')
+            }
+            def forbidden = entries.findAll {
+                it.endsWith('.class')
+                        || it.endsWith('.jar')
+                        || it.endsWith('.zip')
+                        || it.endsWith('.png')
+                        || it.endsWith('.mcmeta')
+                        || it == 'META-INF/neoforge.mods.toml'
+                        || it == 'fabric.mod.json'
+                        || it.endsWith('.mixins.json')
+                        || it.startsWith('assets/glassential/')
+                        || it.startsWith('assets/fusion/')
+                        || it.startsWith('data/')
+                        || (it.startsWith('assets/')
+                        && !it.startsWith('assets/bluemap_glassential/'))
+                        || it.startsWith('com/supermartijn642/')
+                        || it.startsWith('com/github/bigenergy/glassential/')
+                        || it.startsWith('earth/terrarium/')
+                        || it.startsWith('de/bluecolored/')
+                        || it.startsWith('de/maxhenkel/')
+                        || it.startsWith('net/minecraft/')
+                        || it.startsWith('net/neoforged/')
+            }
+            if (projectJava.isEmpty() || !foreignJava.isEmpty() || !forbidden.isEmpty()) {
+                throw new GradleException(
+                        "Sources JAR boundary mismatch: foreignJava=${foreignJava}, "
+                                + "forbidden=${forbidden}"
+                )
+            }
+        } finally {
+            zip.close()
+        }
+    }
+}
+
+tasks.named('check').configure {
+    dependsOn tasks.named('verifyProductionJar')
+    dependsOn tasks.named('verifySourcesJar')
+}
+
+tasks.register('verifyPinnedArtifacts', Exec) {
+    def glassentialJar = providers.gradleProperty('glassentialJar')
+    def fusionJar = providers.gradleProperty('fusionJar')
+    doFirst {
+        if (!glassentialJar.isPresent() || !fusionJar.isPresent()) {
+            throw new GradleException(
+                    'Set -PglassentialJar and -PfusionJar to the exact ATM 1.2.0 artifacts.'
+            )
+        }
+    }
+    commandLine 'python3', 'tools/verify_pinned_artifacts.py',
+            '--glassential', glassentialJar.getOrElse('missing'),
+            '--fusion', fusionJar.getOrElse('missing')
+}
+
+publishing {
+    publications {
+        addon(MavenPublication) {
+            from components.java
+            artifactId = artifact_id
+            pom {
+                name = addon_name
+                description = 'Exact-profile BlueMap rendering for Glassential Fusion models.'
+                url = 'https://github.com/jan-guenter/bluemap-glassential-addon'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://spdx.org/licenses/MIT.html'
+                        distribution = 'repo'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/jan-guenter/bluemap-glassential-addon'
+                    connection = 'scm:git:https://github.com/jan-guenter/bluemap-glassential-addon.git'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = 'GitHubPackages'
+            url = uri('https://maven.pkg.github.com/jan-guenter/bluemap-glassential-addon')
+            credentials {
+                username = System.getenv('GITHUB_ACTOR')
+                password = System.getenv('GITHUB_TOKEN')
+            }
+        }
+    }
+}
+
+tasks.register('verifyPublicationMetadata') {
+    dependsOn tasks.named('generatePomFileForAddonPublication')
+    dependsOn tasks.named('generateMetadataFileForAddonPublication')
+    def pomFile = layout.buildDirectory.file('publications/addon/pom-default.xml')
+    def moduleFile = layout.buildDirectory.file('publications/addon/module.json')
+    inputs.files(pomFile, moduleFile)
+
+    doLast {
+        def pom = new groovy.xml.XmlSlurper().parse(pomFile.get().asFile)
+        if (pom.groupId.text() != addon_group
+                || pom.artifactId.text() != artifact_id
+                || pom.version.text() != project.version.toString()
+                || pom.name.text() != addon_name
+                || pom.description.text()
+                != 'Exact-profile BlueMap rendering for Glassential Fusion models.'
+                || pom.url.text()
+                != 'https://github.com/jan-guenter/bluemap-glassential-addon'
+                || pom.licenses.license.name*.text() != ['MIT License']
+                || pom.licenses.license.url*.text()
+                != ['https://spdx.org/licenses/MIT.html']
+                || pom.licenses.license.distribution*.text() != ['repo']
+                || pom.scm.url.text()
+                != 'https://github.com/jan-guenter/bluemap-glassential-addon'
+                || pom.scm.connection.text()
+                != 'scm:git:https://github.com/jan-guenter/bluemap-glassential-addon.git') {
+            throw new GradleException('Publication POM metadata mismatch')
+        }
+
+        def module = new groovy.json.JsonSlurper().parse(moduleFile.get().asFile)
+        if (module.component.group != addon_group
+                || module.component.module != artifact_id
+                || module.component.version != project.version.toString()) {
+            throw new GradleException('Gradle module coordinates changed')
+        }
+        def variantNames = module.variants.collect { it.name }.toSet()
+        if (variantNames != Set.of('apiElements', 'runtimeElements', 'sourcesElements')) {
+            throw new GradleException("Gradle module variants changed: ${variantNames}")
+        }
+        def publishedFiles = module.variants.collectMany { it.files ?: [] }
+                .collect { it.name }.toSet()
+        if (publishedFiles != Set.of(
+                "${artifact_id}-${project.version}.jar",
+                "${artifact_id}-${project.version}-sources.jar"
+        )) {
+            throw new GradleException(
+                    "Gradle module payload roster changed: ${publishedFiles}"
+            )
+        }
+    }
+}
+
+tasks.named('check').configure {
+    dependsOn tasks.named('verifyPublicationMetadata')
+}

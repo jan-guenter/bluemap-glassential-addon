@@ -1,0 +1,234 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft
+  namespace: bluemap-sophisticated-staging
+spec:
+  replicas: 0
+  template:
+    metadata:
+      annotations:
+        bluemap.guenter.cloud/addon-sha256: "a956e62f7b843391917b861c831545b07af43ccceaa0bb84465e7e0b14c49780"
+        bluemap.guenter.cloud/connectedglass-mode: null
+        bluemap.guenter.cloud/gallery-sha256: "847067eab454eb646300c5f08887c6172de952f796dd090c7ab84d63aae304f0"
+        bluemap.guenter.cloud/glassential-mode: "exact-profile-controlled-staging"
+        bluemap.guenter.cloud/pose-bundle-sha256: null
+        bluemap.guenter.cloud/stone-statues-mode: null
+        bluemap.guenter.cloud/progress-deadline-refresh: null
+        bluemap.guenter.cloud/rechiseled-addon-mode: null
+        bluemap.guenter.cloud/rechiseled-head: null
+        bluemap.guenter.cloud/removal-lifecycle: null
+    spec:
+      containers:
+        - name: minecraft
+          env:
+            - name: TZ
+              value: Europe/Berlin
+            - name: BLUEMAP_COBBLEMON_STATUES_POSE_BUNDLE
+              $patch: delete
+            - name: BLUEMAP_COBBLEMON_STATUES_POSE_BUNDLE_SHA256
+              $patch: delete
+            - name: BLUEMAP_CONNECTEDGLASS_DISABLED_PROFILES
+              $patch: delete
+            - name: BLUEMAP_GLASSENTIAL_DISABLED_PROFILES
+              $patch: delete
+      initContainers:
+        - name: verify-and-unpack
+          env:
+            - name: SERVER_ARCHIVE_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: bluemap-glassential-staging-pins
+                  key: server-archive-size
+            - name: SERVER_ARCHIVE_SHA256
+              valueFrom:
+                configMapKeyRef:
+                  name: bluemap-glassential-staging-pins
+                  key: server-archive-sha256
+          args:
+            - |
+              artifact_dir=/data/.bluemap-sophisticated-staging
+              archive="${artifact_dir}/ServerFiles-1.2.0.zip"
+              test "$(stat -c %s "${archive}")" -eq "${SERVER_ARCHIVE_SIZE}"
+              printf '%s  %s\n' "${SERVER_ARCHIVE_SHA256}" "${archive}" | sha256sum -c -
+              if [ ! -e /data/.atmons-server-pack-1.2.0 ]; then
+                unzip -o "${archive}" -d /data
+                touch /data/.atmons-server-pack-1.2.0
+              fi
+              test "$(stat -c %s /data/neoforge-21.1.248-installer.jar)" -eq 6972104
+              printf '%s  %s\n' \
+                '68eeab77059ba53df1812f1afa5bf530ab2566a3cdcd5f924aa6e71be42e410c' /data/neoforge-21.1.248-installer.jar \
+                '1f0c8f7533bf3b2002575219ba795fd32a44cc5085c2710624ebbf69e6121471' /data/mods/Glassential-renewed-1.21.1-3.4.5.jar \
+                '17f5215648a98bcde4134577b013200dbf363273ae282449c51408ae8346f2fa' /data/mods/fusion-1.3.12-neoforge-mc1.21.1.jar \
+                | sha256sum -c -
+              cat > /data/eula.txt <<'EOF'
+              eula=true
+              EOF
+              cat > /data/server.properties <<'EOF'
+              accepts-transfers=false
+              allow-flight=true
+              broadcast-console-to-ops=false
+              broadcast-rcon-to-ops=false
+              difficulty=peaceful
+              enable-command-block=false
+              enable-jmx-monitoring=false
+              enable-query=false
+              enable-rcon=false
+              enforce-secure-profile=true
+              force-gamemode=true
+              function-permission-level=4
+              gamemode=creative
+              generate-structures=false
+              level-name=world
+              level-seed=731963181124214131
+              level-type=minecraft:flat
+              max-players=2
+              max-tick-time=-1
+              max-world-size=512
+              motd=BlueMap Glassential staging
+              online-mode=true
+              op-permission-level=4
+              pvp=false
+              server-port=25565
+              simulation-distance=4
+              spawn-animals=false
+              spawn-monsters=false
+              spawn-npcs=false
+              spawn-protection=0
+              sync-chunk-writes=true
+              view-distance=6
+              white-list=false
+              EOF
+              controls=/data/world/datapacks/bluemap-staging-performance-controls
+              mkdir -p "${controls}/data/minecraft/tags/function" \
+                "${controls}/data/bluemap_staging/function"
+              cat > "${controls}/pack.mcmeta" <<'EOF'
+              {"pack":{"pack_format":48,"description":"Disposable BlueMap staging controls"}}
+              EOF
+              cat > "${controls}/data/minecraft/tags/function/load.json" <<'EOF'
+              {"values":["bluemap_staging:performance"]}
+              EOF
+              cat > "${controls}/data/bluemap_staging/function/performance.mcfunction" <<'EOF'
+              gamerule doDaylightCycle false
+              gamerule doWeatherCycle false
+              gamerule randomTickSpeed 0
+              gamerule doVinesSpread false
+              gamerule doMobSpawning false
+              gamerule doPatrolSpawning false
+              gamerule doInsomnia false
+              gamerule doTraderSpawning false
+              gamerule doWardenSpawning false
+              gamerule disableElytraMovementCheck true
+              gamerule freezeDamage false
+              gamerule fireDamage false
+              gamerule fallDamage false
+              gamerule drowningDamage false
+              gamerule disableRaids true
+              gamerule globalSoundEvents false
+              EOF
+        - name: install-local-artifacts
+          env:
+            - name: BLUEMAP_SIZE
+              valueFrom: { configMapKeyRef: { name: bluemap-glassential-staging-pins, key: bluemap-size } }
+            - name: BLUEMAP_SHA256
+              valueFrom: { configMapKeyRef: { name: bluemap-glassential-staging-pins, key: bluemap-sha256 } }
+            - name: GLASSENTIAL_SIZE
+              valueFrom: { configMapKeyRef: { name: bluemap-glassential-staging-pins, key: glassential-size } }
+            - name: GLASSENTIAL_SHA256
+              valueFrom: { configMapKeyRef: { name: bluemap-glassential-staging-pins, key: glassential-sha256 } }
+            - name: FUSION_SIZE
+              valueFrom: { configMapKeyRef: { name: bluemap-glassential-staging-pins, key: fusion-size } }
+            - name: FUSION_SHA256
+              valueFrom: { configMapKeyRef: { name: bluemap-glassential-staging-pins, key: fusion-sha256 } }
+            - name: ADDON_SIZE
+              valueFrom: { configMapKeyRef: { name: bluemap-glassential-staging-pins, key: addon-size } }
+            - name: ADDON_SHA256
+              valueFrom: { configMapKeyRef: { name: bluemap-glassential-staging-pins, key: addon-sha256 } }
+            - name: GALLERY_SIZE
+              valueFrom: { configMapKeyRef: { name: bluemap-glassential-staging-pins, key: gallery-size } }
+            - name: GALLERY_SHA256
+              valueFrom: { configMapKeyRef: { name: bluemap-glassential-staging-pins, key: gallery-sha256 } }
+            - name: CONNECTEDGLASS_SIZE
+              $patch: delete
+            - name: CONNECTEDGLASS_SHA256
+              $patch: delete
+          args:
+            - |
+              case "${ADDON_SIZE}:${ADDON_SHA256}" in
+                *PENDING*) printf 'Candidate pins are still pending.\n' >&2; exit 1 ;;
+              esac
+              artifact_dir=/data/.bluemap-sophisticated-staging
+              bluemap_source="${artifact_dir}/bluemap.jar"
+              addon_source="${artifact_dir}/bluemap-glassential-addon-0.1.0-alpha.1.jar"
+              gallery_source="${artifact_dir}/bluemap-glassential-gallery-atmons-1.2.0.zip"
+              glassential=/data/mods/Glassential-renewed-1.21.1-3.4.5.jar
+              fusion=/data/mods/fusion-1.3.12-neoforge-mc1.21.1.jar
+              bluemap_target=/data/mods/bluemap-5.22-agent.backport-5.22-mc1.21.1-2-neoforge.jar
+              addon_target=/data/config/bluemap/packs/bluemap-glassential-addon-0.1.0-alpha.1.jar
+              gallery_target=/data/world/datapacks/bluemap-glassential-gallery-atmons-1.2.0.zip
+              for specification in \
+                "${BLUEMAP_SIZE}:${BLUEMAP_SHA256}:${bluemap_source}" \
+                "${GLASSENTIAL_SIZE}:${GLASSENTIAL_SHA256}:${glassential}" \
+                "${FUSION_SIZE}:${FUSION_SHA256}:${fusion}" \
+                "${ADDON_SIZE}:${ADDON_SHA256}:${addon_source}" \
+                "${GALLERY_SIZE}:${GALLERY_SHA256}:${gallery_source}"
+              do
+                size=${specification%%:*}
+                remainder=${specification#*:}
+                digest=${remainder%%:*}
+                file=${remainder#*:}
+                test "$(stat -c %s "${file}")" -eq "${size}"
+                printf '%s  %s\n' "${digest}" "${file}" | sha256sum -c -
+              done
+              other_bluemap="$({ find /data/mods -maxdepth 1 -type f \
+                \( -iname 'bluemap*.jar' -o -iname '*bluemap*.jar' \) \
+                ! -path "${bluemap_target}"; } 2>/dev/null || true)"
+              if [ -n "${other_bluemap}" ]; then
+                printf 'Unexpected BlueMap JAR already present: %s\n' "${other_bluemap}" >&2
+                exit 1
+              fi
+              mkdir -p /data/mods /data/config/bluemap/maps /data/config/bluemap/packs \
+                /data/config/bluemap/storages /data/world/datapacks
+              cp "${bluemap_source}" "${bluemap_target}"
+              find /data/config/bluemap/packs -maxdepth 1 -type f -name '*.jar' -delete
+              find /data/config/bluemap/packs -maxdepth 1 -type l -name 'zz-*.zip' -delete
+              cp "${addon_source}" "${addon_target}"
+              ln -s ../../../mods/Glassential-renewed-1.21.1-3.4.5.jar \
+                /data/config/bluemap/packs/zz-0246-glassential.zip
+              ln -s ../../../mods/fusion-1.3.12-neoforge-mc1.21.1.jar \
+                /data/config/bluemap/packs/zz-0049-fusion.zip
+              find /data/world/datapacks -maxdepth 1 -type f \
+                -name 'bluemap-*-gallery*.zip' -delete
+              cp "${gallery_source}" "${gallery_target}"
+              cp /lab-config/core.conf /data/config/bluemap/core.conf
+              cp /lab-config/webserver.conf /data/config/bluemap/webserver.conf
+              cp /lab-config/file.conf /data/config/bluemap/storages/file.conf
+              find /data/config/bluemap/maps -maxdepth 1 -type f -name '*.conf' -delete
+              cp /lab-config/glassential_staging.conf \
+                /data/config/bluemap/maps/glassential_staging.conf
+              chmod 0644 "${bluemap_target}" "${addon_target}" "${gallery_target}" \
+                /data/config/bluemap/core.conf /data/config/bluemap/webserver.conf \
+                /data/config/bluemap/storages/file.conf \
+                /data/config/bluemap/maps/glassential_staging.conf
+              rm -rf -- /data/bluemap/web/maps/connectedglass_staging \
+                /data/bluemap/web/maps/glassential_staging
+              test "$(find /data/config/bluemap/packs -maxdepth 1 -type f \
+                -name '*.jar' | wc -l)" -eq 1
+              test "$(find /data/config/bluemap/packs -maxdepth 1 -type l \
+                -name 'zz-*.zip' | wc -l)" -eq 2
+              test "$(readlink -f /data/config/bluemap/packs/zz-0246-glassential.zip)" = "${glassential}"
+              test "$(readlink -f /data/config/bluemap/packs/zz-0049-fusion.zip)" = "${fusion}"
+              test "$(find /data/world/datapacks -maxdepth 1 -type f \
+                -name 'bluemap-*-gallery*.zip' | wc -l)" -eq 1
+              test "$(find /data/config/bluemap/maps -maxdepth 1 -type f \
+                -name '*.conf' | wc -l)" -eq 1
+              printf '%s  %s\n' \
+                "${BLUEMAP_SHA256}" "${bluemap_target}" \
+                "${ADDON_SHA256}" "${addon_target}" \
+                "${GALLERY_SHA256}" "${gallery_target}" \
+                | sha256sum -c -
+      volumes:
+        - name: lab-config
+          configMap:
+            name: bluemap-glassential-staging-config
+            defaultMode: 420

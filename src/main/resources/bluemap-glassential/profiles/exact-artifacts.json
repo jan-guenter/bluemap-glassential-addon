@@ -1,0 +1,27 @@
+{
+  "artifacts": [
+    {
+      "filename": "Glassential-renewed-1.21.1-3.4.5.jar",
+      "modId": "glassential",
+      "sha1": "3a08f59f0930c8123fa1aacdfa0ba9fbdbb6e342",
+      "sha256": "1f0c8f7533bf3b2002575219ba795fd32a44cc5085c2710624ebbf69e6121471",
+      "sha512": "62ccb9057aab96ba656ec8ce357977360c1cc7761fedd7ac995a40b1f16e389c75d753746840b11d30077b6b896938246fb281ec481e560a05084e22098c31d8",
+      "size": 702249,
+      "version": "3.4.5"
+    },
+    {
+      "filename": "fusion-1.3.12-neoforge-mc1.21.1.jar",
+      "modId": "fusion",
+      "sha1": "79c0c6b6a2d9c9a04298df9a88bb71a93e885235",
+      "sha256": "17f5215648a98bcde4134577b013200dbf363273ae282449c51408ae8346f2fa",
+      "sha512": "a13d2a654988f021106f8a455134da1b515872e9122cf70bda064e663749f1c11aeddc3def23a621e236f2ffeefb6f56b15c2c63eeb2bca5f9833c5a2dc23a93",
+      "size": 923270,
+      "version": "1.3.12"
+    }
+  ],
+  "requiredForStaticRendering": [
+    "glassential",
+    "fusion"
+  ],
+  "schema": 1
+}

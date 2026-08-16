@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bluemap-sophisticated-review-public
+  namespace: bluemap-sophisticated-staging
+  labels:
+    app.kubernetes.io/name: bluemap-glassential-review-public
+    app.kubernetes.io/part-of: bluemap-sophisticated-staging
+    bluemap.guenter.cloud/experiment-id: atm120-glassential-owner-review
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: bluemap-glassential.guenter.cloud
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: minecraft
+                port:
+                  name: bluemap
