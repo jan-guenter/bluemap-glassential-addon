@@ -96,7 +96,10 @@ release authorization only, not production deployment authorization. See
 
 ## Generate and validate
 
-Java 21 and the exact local BlueMap backport are required. Example inputs:
+Java 21 and the exact local BlueMap backport are required. Clone with
+`--recurse-submodules`, or initialize an existing checkout with
+`git submodule update --init --recursive`, before invoking Gradle. Example
+inputs:
 
 ```bash
 glassential_jar='/absolute/path/Glassential-renewed-1.21.1-3.4.5.jar'
