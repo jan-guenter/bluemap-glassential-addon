@@ -2,7 +2,7 @@
 
 pluginManagement {
     def toolkitPath = 'tooling/bluemap-addon-toolkit'
-    def expectedToolkitCommit = 'f58da04567f10efe615c582797f3ab00b7a7343f'
+    def expectedToolkitCommit = '6cd34a8368cc4ee8628fbe830a90ec5b14960629'
     def consumerRoot = settings.settingsDir
     def toolkit = new File(consumerRoot, toolkitPath)
 
