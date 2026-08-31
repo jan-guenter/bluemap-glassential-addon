@@ -1,28 +1,29 @@
 /*
  * SPDX-License-Identifier: MIT
  */
-package io.github.janguenter.bluemap.glassential.adapter.bluemap522;
+package io.github.janguenter.bluemap.glassential.adapter.bluemap523;
 
 import de.bluecolored.bluemap.core.map.hires.block.BlockRendererType;
 import de.bluecolored.bluemap.core.resources.pack.resourcepack.ResourcePack;
-import de.bluecolored.bluemap.core.resources.pack.resourcepack.blockstate.Variant;
 import de.bluecolored.bluemap.core.util.Key;
-import de.bluecolored.bluemap.core.util.Keyed;
-import de.bluecolored.bluemap.core.util.Registry;
 import de.bluecolored.bluemap.core.world.BlockEntity;
 import de.bluecolored.bluemap.core.world.mca.MCAUtil;
 import de.bluecolored.bluemap.core.world.mca.blockentity.BlockEntityType;
 import de.bluecolored.bluenbt.NBTWriter;
+import io.github.janguenter.bluemap.addon.adapter.api.bluemap523.RegistryGuard;
+import io.github.janguenter.bluemap.addon.adapter.api.bluemap523.ResourceExtensionType;
 import io.github.janguenter.bluemap.glassential.activation.GlassentialRuntime;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-/** BlueMap 5.22 internal ABI boundary. */
-public final class BlueMap522Adapter {
+/** BlueMap 5.23 feature-backport ABI boundary. */
+public final class BlueMap523Adapter {
 
     private static final GlassentialRuntime RUNTIME = GlassentialRuntime.INSTANCE;
+    private static final Key EXTENSION_KEY =
+            Key.parse("bluemap_glassential:exact_profile");
     static final de.bluecolored.bluemap.core.util.Key RENDERER_KEY =
             de.bluecolored.bluemap.core.util.Key.parse("bluemap_glassential:fusion_model");
     private static final BlockRendererType RENDERER = new BlockRendererType.Impl(
@@ -30,7 +31,10 @@ public final class BlueMap522Adapter {
             (pack, gallery, settings) -> new GlassentialRenderer(pack, gallery, settings, RUNTIME)
     );
     private static final ResourcePack.Extension<GlassentialResourceExtension> EXTENSION =
-            new GlassentialResourceExtensionType(RUNTIME);
+            new ResourceExtensionType<>(
+                    EXTENSION_KEY,
+                    pack -> new GlassentialResourceExtension(pack, RUNTIME)
+            );
     static final Key COLOR_BLOCK_ENTITY_KEY = Key.parse("glassential:colorable_glass");
     static final Key ONE_WAY_BLOCK_ENTITY_KEY = Key.parse("glassential:one_way_glass");
     private static final BlockEntityType COLOR_BLOCK_ENTITY = new BlockEntityType.Impl(
@@ -40,21 +44,21 @@ public final class BlueMap522Adapter {
             ONE_WAY_BLOCK_ENTITY_KEY, GlassentialOneWayBlockEntityData.class
     );
 
-    private BlueMap522Adapter() {
+    private BlueMap523Adapter() {
     }
 
     public static synchronized boolean install() {
-        if (!canRegister(BlockRendererType.REGISTRY, RENDERER)
-                || !canRegister(ResourcePack.Extension.REGISTRY, EXTENSION)
-                || !canRegister(BlockEntityType.REGISTRY, COLOR_BLOCK_ENTITY)
-                || !canRegister(BlockEntityType.REGISTRY, ONE_WAY_BLOCK_ENTITY)) {
+        if (!RegistryGuard.canRegister(BlockRendererType.REGISTRY, RENDERER)
+                || !RegistryGuard.canRegister(ResourcePack.Extension.REGISTRY, EXTENSION)
+                || !RegistryGuard.canRegister(BlockEntityType.REGISTRY, COLOR_BLOCK_ENTITY)
+                || !RegistryGuard.canRegister(BlockEntityType.REGISTRY, ONE_WAY_BLOCK_ENTITY)) {
             RUNTIME.disable("registry-collision");
             return false;
         }
-        if (!register(BlockRendererType.REGISTRY, RENDERER)
-                || !register(ResourcePack.Extension.REGISTRY, EXTENSION)
-                || !register(BlockEntityType.REGISTRY, COLOR_BLOCK_ENTITY)
-                || !register(BlockEntityType.REGISTRY, ONE_WAY_BLOCK_ENTITY)) {
+        if (!RegistryGuard.register(BlockRendererType.REGISTRY, RENDERER)
+                || !RegistryGuard.register(ResourcePack.Extension.REGISTRY, EXTENSION)
+                || !RegistryGuard.register(BlockEntityType.REGISTRY, COLOR_BLOCK_ENTITY)
+                || !RegistryGuard.register(BlockEntityType.REGISTRY, ONE_WAY_BLOCK_ENTITY)) {
             RUNTIME.disable("registry-collision");
             return false;
         }
@@ -125,30 +129,15 @@ public final class BlueMap522Adapter {
         return output.toByteArray();
     }
 
-    static boolean isExpectedDispatch(Variant variant) {
-        return variant != null
-                && variant.getRenderer() == RENDERER
-                && ResourcePack.MISSING_BLOCK_MODEL.equals(variant.getModel())
-                && !variant.isTransformed()
-                && !variant.isUvlock()
-                && Double.compare(variant.getWeight(), 1D) == 0;
+    static BlockRendererType renderer() {
+        return RENDERER;
     }
 
     static GlassentialResourceExtension extension(ResourcePack resourcePack) {
         return resourcePack.getExtension(EXTENSION);
     }
 
-    private static <T extends Keyed> boolean canRegister(Registry<T> registry, T candidate) {
-        T existing = registry.get(candidate.getKey());
-        return existing == null || existing == candidate;
-    }
-
-    private static <T extends Keyed> boolean register(Registry<T> registry, T candidate) {
-        T existing = registry.get(candidate.getKey());
-        if (existing == null) {
-            registry.register(candidate);
-            existing = registry.get(candidate.getKey());
-        }
-        return existing == candidate;
+    static ResourcePack.Extension<GlassentialResourceExtension> extensionType() {
+        return EXTENSION;
     }
 }

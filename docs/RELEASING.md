@@ -1,5 +1,32 @@
 # Releasing
 
+The current `0.1.0-alpha.2` source is the owner-accepted BlueMap 5.23 release
+candidate. Its identities are sealed below and publication is authorized. The
+alpha.1 identities remain historical and immutable.
+
+Initialize all three exact source checkouts before running the gate:
+
+```bash
+git submodule update --init --recursive -- \
+  tooling/bluemap-addon-toolkit \
+  modules/bluemap-addon-adapter-api \
+  modules/bluemap-fusion-resource-models
+```
+
+The owner accepted the aggregate integration render on 2026-08-31. Publication
+is limited to these exact `0.1.0-alpha.2` assets:
+
+| Asset | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `bluemap-glassential-addon-0.1.0-alpha.2.jar` | 166,871 | `9df99ffba26b1dd5a38452fb020e9a931b6a16a4ab4c374d85dad91cb9437e60` |
+| `bluemap-glassential-addon-0.1.0-alpha.2-sources.jar` | 82,758 | `1246e9052b9c0597fe89916571e66fffa5c90d1a2814c69a0ef6bc72928d24cf` |
+| `bluemap-glassential-addon-0.1.0-alpha.2.pom` | 1,355 | `4bf570b09d88cd804b221601592af9e4e2be041a330ab931e25cd7845f298dbf` |
+| `bluemap-glassential-addon-0.1.0-alpha.2.module.json` | 2,847 | `e8a6c25c25b348c8ad76c1699cfeb00a8bf0429d1e878a04950611de68e5c7c1` |
+| `SHA256SUMS` | 464 | `6d6733489fd65ad2675372600dc4f97e5668f263abb172c5897f9ad2e81b56dd` |
+
+The following alpha.1 authorization and identities are retained as historical
+release evidence.
+
 The owner explicitly accepted the frozen candidate's visual result on
 2026-08-16 after its exact-client six-cell comparison and isolated BlueMap
 staging passed. The restart-scoped disabled control and physical-removal
@@ -27,7 +54,7 @@ The frozen candidate asset identities are:
 | `bluemap-glassential-addon-0.1.0-alpha.1.module.json` | 2,847 | `f96bdd237f750d581fc79069814ded305851b76169e2a6e87b73d47eec057553` |
 | `SHA256SUMS` | 464 | `ac35389832fbb972f80e6c9c86244445ab5b7a2576672191becce7514a36566f` |
 
-Documentation and workflow hardening may occur after the candidate freeze only
+Documentation and workflow hardening for alpha.1 occurred after its freeze only
 if the release gate proves the five asset identities above unchanged. Release
 authorization is limited to those exact five identities. Any changed release
 asset requires a new freeze, technical gate, and explicit owner acceptance.

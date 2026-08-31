@@ -1,17 +1,15 @@
 /*
  * SPDX-License-Identifier: MIT
  */
-package io.github.janguenter.bluemap.glassential.adapter.bluemap522;
+package io.github.janguenter.bluemap.glassential.adapter.bluemap523;
 
 import de.bluecolored.bluemap.core.resources.pack.resourcepack.ResourcePack;
 import de.bluecolored.bluemap.core.resources.pack.resourcepack.ResourcePackExtension;
-import de.bluecolored.bluemap.core.resources.pack.resourcepack.blockstate.Variant;
-import de.bluecolored.bluemap.core.resources.pack.resourcepack.blockstate.VariantSet;
-import de.bluecolored.bluemap.core.resources.pack.resourcepack.blockstate.Variants;
 import de.bluecolored.bluemap.core.resources.pack.resourcepack.texture.Texture;
 import de.bluecolored.bluemap.core.util.Key;
 import de.bluecolored.bluemap.core.world.BlockProperties;
 import de.bluecolored.bluemap.core.world.BlockState;
+import io.github.janguenter.bluemap.addon.adapter.api.bluemap523.SyntheticDispatch;
 import io.github.janguenter.bluemap.glassential.activation.GlassentialRuntime;
 import io.github.janguenter.bluemap.glassential.profile.ExactModArtifactDetector;
 import io.github.janguenter.bluemap.glassential.profile.ProfileDisablement;
@@ -66,7 +64,7 @@ final class GlassentialResourceExtension implements ResourcePackExtension {
             runtime.inactive("exact-artifact-pair-missing");
             return;
         }
-        if (!BlueMap522Adapter.verifyBlockEntityRetention()) {
+        if (!BlueMap523Adapter.verifyBlockEntityRetention()) {
             runtime.disable("block-entity-codec-unavailable");
             return;
         }
@@ -86,9 +84,10 @@ final class GlassentialResourceExtension implements ResourcePackExtension {
             runtime.inactive(schema.reason());
             return;
         }
-        de.bluecolored.bluemap.core.resources.pack.resourcepack.blockstate.BlockState dispatch =
-                resourcePack.getBlockStates().get(SYNTHETIC);
-        if (!validDispatch(dispatch)) {
+        if (!SyntheticDispatch.matches(
+                resourcePack.getBlockStates().get(SYNTHETIC),
+                BlueMap523Adapter.renderer()
+        )) {
             runtime.inactive("synthetic-dispatch-invalid");
             return;
         }
@@ -253,24 +252,6 @@ final class GlassentialResourceExtension implements ResourcePackExtension {
             TextureCatalog.Entry entry
     ) {
         return sheet.getWidth() == entry.width() && sheet.getHeight() == entry.height();
-    }
-
-    private static boolean validDispatch(
-            de.bluecolored.bluemap.core.resources.pack.resourcepack.blockstate.BlockState state
-    ) {
-        if (state == null || state.getMultipart() != null) {
-            return false;
-        }
-        Variants variants = state.getVariants();
-        if (variants == null || variants.getDefaultVariant() == null) {
-            return false;
-        }
-        VariantSet set = variants.getDefaultVariant();
-        if (set.getVariants().length != 1) {
-            return false;
-        }
-        Variant variant = set.getVariants()[0];
-        return BlueMap522Adapter.isExpectedDispatch(variant);
     }
 
     private record TileKey(Key source, int index) {

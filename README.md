@@ -2,12 +2,20 @@
 
 This standalone MIT BlueMap add-on reproduces the static map appearance of the
 exact Glassential Renewed 3.4.5 and Fusion 1.3.12 inputs installed by All the
-Mons 1.2.0. The frozen `0.1.0-alpha.1` candidate passed its technical staging,
+Mons 1.2.0. The published `0.1.0-alpha.1` candidate passed its technical staging,
 exact-client calibration, restart-scoped disabled-control, and physical
 rollback gates on 2026-08-16. The owner explicitly accepted the candidate's
 visual result on 2026-08-16 and authorized publication as the immutable
 `0.1.0-alpha.1` prerelease. That acceptance does not authorize production
 deployment or establish a supported production release.
+
+Version `0.1.0-alpha.2` is the owner-accepted BlueMap 5.23 release candidate.
+Its exact production JAR is 166,871 bytes with SHA-256
+`9df99ffba26b1dd5a38452fb020e9a931b6a16a4ab4c374d85dad91cb9437e60`.
+It preserves the accepted profile, gallery, and renderer behavior while moving
+the adapter boundary to `bluemap523`. It compiles the exact Adapter API
+`0.1.0-alpha.2` and released Fusion resource-model `0.1.0-alpha.1` source
+modules. Neither standalone support-module JAR is installed.
 
 ## Exact contract
 
@@ -67,7 +75,7 @@ pixel overrides remain supported; structural overrides do not.
 
 ## Technical validation status
 
-The frozen production JAR is 162,440 bytes with SHA-256
+The published `0.1.0-alpha.1` production JAR is 162,440 bytes with SHA-256
 `a956e62f7b843391917b861c831545b07af43ccceaa0bb84465e7e0b14c49780`.
 On the reusable disposable host, the 2026-08-16 lifecycle established:
 
@@ -96,10 +104,18 @@ release authorization only, not production deployment authorization. See
 
 ## Generate and validate
 
-Java 21 and the exact local BlueMap backport are required. Clone with
-`--recurse-submodules`, or initialize an existing checkout with
-`git submodule update --init --recursive`, before invoking Gradle. Example
-inputs:
+Java 21 and the exact local BlueMap feature-backport checkout are required.
+Clone with `--recurse-submodules`, or initialize the three pinned support
+checkouts before invoking Gradle:
+
+```bash
+git submodule update --init --recursive -- \
+  tooling/bluemap-addon-toolkit \
+  modules/bluemap-addon-adapter-api \
+  modules/bluemap-fusion-resource-models
+```
+
+Example inputs:
 
 ```bash
 glassential_jar='/absolute/path/Glassential-renewed-1.21.1-3.4.5.jar'
@@ -117,12 +133,13 @@ gradle --no-daemon \
   -PbluemapSourcePath=/absolute/path/BlueMap \
   -PglassentialJar="$glassential_jar" \
   -PfusionJar="$fusion_jar" \
-  clean check build generatePomFileForAddonPublication \
-  generateMetadataFileForAddonPublication verifyPinnedArtifacts
+  clean prototypeCheck build generatePomFileForAddonPublication \
+  generateMetadataFileForAddonPublication
 ```
 
-The binary and sources JAR gates must reject upstream namespaces, assets,
-data, classes, and nested archives.
+The binary and sources JAR gates admit only the exact Adapter API and Fusion
+model source sets outside this repository's package. They reject upstream
+runtime namespaces, assets, data, classes, and nested archives.
 
 ## Gallery and licensing
 

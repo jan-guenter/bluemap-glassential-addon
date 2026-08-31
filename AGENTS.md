@@ -7,17 +7,24 @@ workspace and portfolio guides, this README, `docs/ARCHITECTURE.md`,
 
 ## Boundaries
 
-- Java 21, Minecraft 1.21.1, and BlueMap 5.22 backport commit
-  `9be321df995a1103808621d529eb72773e719d4d`.
+- Java 21, Minecraft 1.21.1, and only BlueMap feature-backport commit
+  `7e07f4e74ec1e92a6ead9aa1e66054af3e133aac`, API commit
+  `285c9a60eff3ac2b0cab308ce1058d1565be0971`.
+- Compile the four Adapter API sources from gitlink
+  `e81f08bc4bfbf02d810ec8949a019130e2e61634`, source tree
+  `2f974c9bb2ba13888d69682f86f30f58922d30eb`, and the five Fusion model
+  sources from released gitlink `3ddd5d39bb7cc8664c242aedd849a636316075c2`,
+  source tree `6e85031ff2f0e7417a7a2fb0babbf7ed5a4f218a`. Never bundle either
+  standalone module JAR.
 - Own only the generated 49-ID/471-state route: 31 `glassential:*` IDs with
   453 legal states plus the exact 18 propertyless vanilla glass-cube IDs.
 - Leave the other 82 Glassential IDs/4,996 legal states, vanilla panes, and
   every other namespace on BlueMap's stock path.
 - Register no `fusion:*` blocks and add no runtime provider dependency on
   another add-on.
-- Bundle no Glassential/Fusion code, classes, JSON, PNG, metadata, or JARs.
-  Interpret only byte-exact operator-installed resources with independently
-  authored MIT code.
+- Bundle no Glassential/Fusion runtime code, JSON, PNG, metadata, or JARs.
+  The exact pinned MIT Fusion resource-model sources are deliberately compiled
+  into this add-on; interpret only byte-exact operator-installed resources.
 - Decode only `Color`, `EmitLight`, and `Mimic` needed for static rendering.
   Do not own or mutate gameplay state.
 - Preserve stock rendering outside the exact route and atomically fall back on
@@ -37,6 +44,12 @@ workspace and portfolio guides, this README, `docs/ARCHITECTURE.md`,
   `glassential-fusion-3.4.5-1.3.12`.
 - Do not create a remote, mutate a cluster, publish, tag, release, or touch
   production without the separate owner gate.
+
+The owner accepted the aggregate BlueMap 5.23 integration view for release
+candidate `0.1.0-alpha.2` on 2026-08-31. Its exact production JAR is 166,871
+bytes with SHA-256
+`9df99ffba26b1dd5a38452fb020e9a931b6a16a4ab4c374d85dad91cb9437e60`.
+Publication is authorized; production deployment remains excluded.
 
 ## Generated inputs
 

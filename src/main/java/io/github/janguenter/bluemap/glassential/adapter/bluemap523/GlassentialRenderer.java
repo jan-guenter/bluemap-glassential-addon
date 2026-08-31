@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: MIT
  */
-package io.github.janguenter.bluemap.glassential.adapter.bluemap522;
+package io.github.janguenter.bluemap.glassential.adapter.bluemap523;
 
 import de.bluecolored.bluemap.core.map.TextureGallery;
 import de.bluecolored.bluemap.core.map.hires.MaxCapacityReachedException;
@@ -46,7 +46,7 @@ final class GlassentialRenderer implements BlockRenderer {
         this.runtime = runtime;
         this.stock = new ResourceModelRenderer(resourcePack, textureGallery, renderSettings);
         this.emitter = new FusionModelEmitter(resourcePack, textureGallery, renderSettings);
-        this.extension = BlueMap522Adapter.extension(resourcePack);
+        this.extension = BlueMap523Adapter.extension(resourcePack);
     }
 
     @Override

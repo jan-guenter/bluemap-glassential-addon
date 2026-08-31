@@ -19,13 +19,25 @@ peeled release commit `4a4eb5030d18f1e54cd5a8ad1c2dc093a187ac06`;
 Glassential-specific profile facts, state/NBT semantics, tests, and gallery
 replace the predecessor's generated content.
 
+The current migration removes the duplicated `AxisVector`, `FusionDirection`,
+`FusionTextureSelector`, and `TextureOrientation` implementations. Their exact
+MIT replacements, plus `FusionTextureLayout`, are compiled from released
+Fusion Resource Models `0.1.0-alpha.1` commit
+`3ddd5d39bb7cc8664c242aedd849a636316075c2`, source tree
+`6e85031ff2f0e7417a7a2fb0babbf7ed5a4f218a`. Four narrow 5.23 adapter helpers
+are compiled from Adapter API `0.1.0-alpha.2` commit
+`e81f08bc4bfbf02d810ec8949a019130e2e61634`, source tree
+`2f974c9bb2ba13888d69682f86f30f58922d30eb`. Both source sets are MIT,
+register no consumer IDs by themselves, and are package-audited in both JARs.
+
 The BlueMap-facing emitter retains attribution for adapted MIT renderer
 mechanics in source and `LICENSE-BlueMap`. Binary and sources JAR audits must
 reject Glassential/Fusion namespaces, third-party assets/classes, nested
 archives, and Minecraft/NeoForge/BlueMap implementation classes. The complete
 factual record is `provenance/upstreams.json`.
 
-The frozen 2026-08-16 candidate embeds that file verbatim, including
+The published 2026-08-16 alpha.1 candidate embeds its historical version of
+that file verbatim, including
 `"status": "unreleased-implementation"`. This value is the artifact-time marker
 for the state in which the candidate bytes were frozen, not a mutable summary
 of later operational or release status. The owner's subsequent 2026-08-16

@@ -4,6 +4,9 @@
 package io.github.janguenter.bluemap.glassential.model;
 
 import io.github.janguenter.bluemap.glassential.profile.TextureLayout;
+import io.github.janguenter.bluemap.resource.fusion.model.FusionDirection;
+import io.github.janguenter.bluemap.resource.fusion.model.FusionTextureLayout;
+import io.github.janguenter.bluemap.resource.fusion.model.FusionTextureSelector;
 import org.junit.jupiter.api.Test;
 
 import java.security.MessageDigest;
@@ -20,12 +23,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class FusionTextureSelectorTest {
 
     @Test
+    void everyProfileLayoutMapsToTheSharedModule() {
+        for (TextureLayout layout : TextureLayout.values()) {
+            assertEquals(layout.name(), FusionTextureLayout.valueOf(layout.name()).name());
+        }
+    }
+
+    @Test
     void locksAll256FullMasksAndNeverSelectsPaddingOrCell41()
             throws NoSuchAlgorithmException {
         byte[] selected = new byte[256];
         Set<Integer> tiles = new HashSet<>();
         for (int mask = 0; mask < 256; mask++) {
-            int tile = FusionTextureSelector.tile(TextureLayout.FULL, mask);
+            int tile = FusionTextureSelector.tile(FusionTextureLayout.FULL, mask);
             selected[mask] = (byte) tile;
             tiles.add(tile);
         }
@@ -47,29 +57,29 @@ class FusionTextureSelectorTest {
             int cardinal = bit(mask, 0) | bit(mask, 2) << 1
                     | bit(mask, 4) << 2 | bit(mask, 6) << 3;
             assertEquals(simple[cardinal],
-                    FusionTextureSelector.tile(TextureLayout.SIMPLE, mask));
+                    FusionTextureSelector.tile(FusionTextureLayout.SIMPLE, mask));
         }
     }
 
     @Test
     void plainTexturesAlwaysSelectTheirOnlyCell() {
         for (int mask = 0; mask < 256; mask++) {
-            assertEquals(0, FusionTextureSelector.tile(TextureLayout.PLAIN, mask));
+            assertEquals(0, FusionTextureSelector.tile(FusionTextureLayout.PLAIN, mask));
         }
         assertThrows(IllegalArgumentException.class,
-                () -> FusionTextureSelector.tile(TextureLayout.PLAIN, -1));
+                () -> FusionTextureSelector.tile(FusionTextureLayout.PLAIN, -1));
         assertThrows(IllegalArgumentException.class,
-                () -> FusionTextureSelector.tile(TextureLayout.PLAIN, 256));
+                () -> FusionTextureSelector.tile(FusionTextureLayout.PLAIN, 256));
     }
 
     @Test
     void locksPiecedShortcutsAndCornerQuadrants() {
-        assertEquals(0, FusionTextureSelector.tile(TextureLayout.PIECED, 0x00));
-        assertEquals(1, FusionTextureSelector.tile(TextureLayout.PIECED, 0xff));
-        assertEquals(2, FusionTextureSelector.tile(TextureLayout.PIECED, 0x11));
-        assertEquals(3, FusionTextureSelector.tile(TextureLayout.PIECED, 0x44));
-        assertEquals(4, FusionTextureSelector.tile(TextureLayout.PIECED, 0x55));
-        assertEquals(-1, FusionTextureSelector.tile(TextureLayout.PIECED, 0x57));
+        assertEquals(0, FusionTextureSelector.tile(FusionTextureLayout.PIECED, 0x00));
+        assertEquals(1, FusionTextureSelector.tile(FusionTextureLayout.PIECED, 0xff));
+        assertEquals(2, FusionTextureSelector.tile(FusionTextureLayout.PIECED, 0x11));
+        assertEquals(3, FusionTextureSelector.tile(FusionTextureLayout.PIECED, 0x44));
+        assertEquals(4, FusionTextureSelector.tile(FusionTextureLayout.PIECED, 0x55));
+        assertEquals(-1, FusionTextureSelector.tile(FusionTextureLayout.PIECED, 0x57));
         int[] expected = {0, 3, 2, 4, 0, 3, 2, 1};
         int[] actual = new int[8];
         for (int index = 0; index < 8; index++) {
