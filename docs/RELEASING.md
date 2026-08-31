@@ -1,9 +1,8 @@
 # Releasing
 
-The current `0.1.0-alpha.2` source is an unpublished BlueMap 5.23 migration
-candidate. Its accepted artifact identities remain `PENDING`; do not tag or
-publish it until the integration gallery is accepted and those identities are
-sealed. The alpha.1 identities below are historical and immutable.
+The current `0.1.0-alpha.2` source is the owner-accepted BlueMap 5.23 release
+candidate. Its identities are sealed below and publication is authorized. The
+alpha.1 identities remain historical and immutable.
 
 Initialize all three exact source checkouts before running the gate:
 
@@ -13,6 +12,20 @@ git submodule update --init --recursive -- \
   modules/bluemap-addon-adapter-api \
   modules/bluemap-fusion-resource-models
 ```
+
+The owner accepted the aggregate integration render on 2026-08-31. Publication
+is limited to these exact `0.1.0-alpha.2` assets:
+
+| Asset | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `bluemap-glassential-addon-0.1.0-alpha.2.jar` | 166,871 | `9df99ffba26b1dd5a38452fb020e9a931b6a16a4ab4c374d85dad91cb9437e60` |
+| `bluemap-glassential-addon-0.1.0-alpha.2-sources.jar` | 82,758 | `1246e9052b9c0597fe89916571e66fffa5c90d1a2814c69a0ef6bc72928d24cf` |
+| `bluemap-glassential-addon-0.1.0-alpha.2.pom` | 1,355 | `4bf570b09d88cd804b221601592af9e4e2be041a330ab931e25cd7845f298dbf` |
+| `bluemap-glassential-addon-0.1.0-alpha.2.module.json` | 2,847 | `e8a6c25c25b348c8ad76c1699cfeb00a8bf0429d1e878a04950611de68e5c7c1` |
+| `SHA256SUMS` | 464 | `6d6733489fd65ad2675372600dc4f97e5668f263abb172c5897f9ad2e81b56dd` |
+
+The following alpha.1 authorization and identities are retained as historical
+release evidence.
 
 The owner explicitly accepted the frozen candidate's visual result on
 2026-08-16 after its exact-client six-cell comparison and isolated BlueMap

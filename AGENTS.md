@@ -45,6 +45,12 @@ workspace and portfolio guides, this README, `docs/ARCHITECTURE.md`,
 - Do not create a remote, mutate a cluster, publish, tag, release, or touch
   production without the separate owner gate.
 
+The owner accepted the aggregate BlueMap 5.23 integration view for release
+candidate `0.1.0-alpha.2` on 2026-08-31. Its exact production JAR is 166,871
+bytes with SHA-256
+`9df99ffba26b1dd5a38452fb020e9a931b6a16a4ab4c374d85dad91cb9437e60`.
+Publication is authorized; production deployment remains excluded.
+
 ## Generated inputs
 
 Run `tools/generate_profile.py` only with the exact artifacts pinned in README.

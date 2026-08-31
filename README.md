@@ -9,7 +9,9 @@ visual result on 2026-08-16 and authorized publication as the immutable
 `0.1.0-alpha.1` prerelease. That acceptance does not authorize production
 deployment or establish a supported production release.
 
-Version `0.1.0-alpha.2` is an unpublished BlueMap 5.23 migration candidate.
+Version `0.1.0-alpha.2` is the owner-accepted BlueMap 5.23 release candidate.
+Its exact production JAR is 166,871 bytes with SHA-256
+`9df99ffba26b1dd5a38452fb020e9a931b6a16a4ab4c374d85dad91cb9437e60`.
 It preserves the accepted profile, gallery, and renderer behavior while moving
 the adapter boundary to `bluemap523`. It compiles the exact Adapter API
 `0.1.0-alpha.2` and released Fusion resource-model `0.1.0-alpha.1` source
