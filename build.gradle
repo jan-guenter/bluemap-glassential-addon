@@ -14,6 +14,13 @@ base {
     archivesName = artifact_id
 }
 
+sourceSets {
+    main.java.srcDirs(
+            'modules/bluemap-addon-adapter-api/src/main/java',
+            'modules/bluemap-fusion-resource-models/src/main/java'
+    )
+}
+
 repositories {
     mavenCentral()
     maven {
@@ -31,6 +38,10 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.11.4')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(AbstractArchiveTask).configureEach {
+    includeEmptyDirs = false
 }
 
 tasks.named('test', Test).configure {
@@ -102,6 +113,61 @@ tasks.named('sourcesJar', Jar).configure {
 
 def productionJar = tasks.named('jar', Jar).flatMap { it.archiveFile }
 def publishedSourcesJar = tasks.named('sourcesJar', Jar).flatMap { it.archiveFile }
+def sharedAdapterApiPackage =
+        'io/github/janguenter/bluemap/addon/adapter/api/bluemap523/'
+def sharedAdapterApiClasses = [
+        'BlueMapRuntimeCompatibility.class',
+        'RegistryGuard.class',
+        'ResourceExtensionType.class',
+        'SyntheticDispatch.class'
+].collect { sharedAdapterApiPackage + it }
+def sharedAdapterApiSources = [
+        'BlueMapRuntimeCompatibility.java',
+        'RegistryGuard.java',
+        'ResourceExtensionType.java',
+        'SyntheticDispatch.java'
+].collect { sharedAdapterApiPackage + it }
+def sharedFusionPackage = 'io/github/janguenter/bluemap/resource/fusion/model/'
+def sharedFusionClasses = [
+        'AxisVector.class',
+        'FusionDirection.class',
+        'FusionTextureLayout.class',
+        'FusionTextureSelector$1.class',
+        'FusionTextureSelector.class',
+        'TextureOrientation$1.class',
+        'TextureOrientation$Frame.class',
+        'TextureOrientation.class'
+].collect { sharedFusionPackage + it }
+def sharedFusionSources = [
+        'AxisVector.java',
+        'FusionDirection.java',
+        'FusionTextureLayout.java',
+        'FusionTextureSelector.java',
+        'TextureOrientation.java'
+].collect { sharedFusionPackage + it }
+def approvedSharedClasses = sharedAdapterApiClasses + sharedFusionClasses
+def approvedSharedSources = sharedAdapterApiSources + sharedFusionSources
+def legacyLocalAdapterPackage =
+        'io/github/janguenter/bluemap/glassential/adapter/bluemap522/'
+def displacedAdapterHelpers = [
+        'io/github/janguenter/bluemap/glassential/adapter/bluemap523/AdapterCompatibility',
+        'io/github/janguenter/bluemap/glassential/adapter/bluemap523/GlassentialResourceExtensionType'
+]
+def legacyFusionClasses = [
+        'AxisVector.class',
+        'FusionDirection.class',
+        'FusionTextureSelector$1.class',
+        'FusionTextureSelector.class',
+        'TextureOrientation$1.class',
+        'TextureOrientation$Frame.class',
+        'TextureOrientation.class'
+].collect { 'io/github/janguenter/bluemap/glassential/model/' + it }
+def legacyFusionSources = [
+        'AxisVector.java',
+        'FusionDirection.java',
+        'FusionTextureSelector.java',
+        'TextureOrientation.java'
+].collect { 'io/github/janguenter/bluemap/glassential/model/' + it }
 tasks.register('verifyProductionJar') {
     dependsOn tasks.named('jar')
     inputs.file(productionJar)
@@ -127,10 +193,16 @@ tasks.register('verifyProductionJar') {
                     'META-INF/NOTICE-bluemap-glassential-addon.md',
                     'META-INF/THIRD_PARTY-bluemap-glassential-addon.md',
                     'META-INF/bluemap-glassential/upstreams.json'
-            ]
+            ] + approvedSharedClasses
             def missing = required.findAll { !entries.contains(it) }
-            if (!missing.isEmpty()) {
-                throw new GradleException("Production JAR is missing: ${missing}")
+            def nonUniqueShared = approvedSharedClasses.findAll { shared ->
+                entries.count { it == shared } != 1
+            }
+            if (!missing.isEmpty() || !nonUniqueShared.isEmpty()) {
+                throw new GradleException(
+                        "Production JAR shared boundary mismatch: missing=${missing}, "
+                                + "nonUnique=${nonUniqueShared}"
+                )
             }
             def expectedProfileEntries = required.findAll {
                 it.startsWith('bluemap-glassential/profiles/')
@@ -179,13 +251,16 @@ tasks.register('verifyProductionJar') {
             )) {
                 throw new GradleException('Production JAR provenance payload drifted')
             }
+            def foreignClasses = entries.findAll {
+                it.endsWith('.class')
+                        && !it.startsWith('io/github/janguenter/bluemap/glassential/')
+                        && !approvedSharedClasses.contains(it)
+            }
             def forbidden = entries.findAll {
                 it.endsWith('.jar')
                         || it.endsWith('.zip')
                         || it.endsWith('.png')
                         || it.endsWith('.mcmeta')
-                        || (it.endsWith('.class')
-                        && !it.startsWith('io/github/janguenter/bluemap/glassential/'))
                         || it == 'META-INF/neoforge.mods.toml'
                         || it == 'fabric.mod.json'
                         || it.endsWith('.mixins.json')
@@ -201,9 +276,19 @@ tasks.register('verifyProductionJar') {
                         || it.startsWith('de/maxhenkel/')
                         || it.startsWith('net/minecraft/')
                         || it.startsWith('net/neoforged/')
+                        || it.startsWith(legacyLocalAdapterPackage)
+                        || displacedAdapterHelpers.any { helper -> it.startsWith(helper) }
+                        || legacyFusionClasses.contains(it)
+                        || (it.startsWith(sharedAdapterApiPackage)
+                        && !sharedAdapterApiClasses.contains(it))
+                        || (it.startsWith(sharedFusionPackage)
+                        && !sharedFusionClasses.contains(it))
             }
-            if (!forbidden.isEmpty()) {
-                throw new GradleException("Production JAR contains forbidden entries: ${forbidden}")
+            if (!foreignClasses.isEmpty() || !forbidden.isEmpty()) {
+                throw new GradleException(
+                        "Production JAR boundary mismatch: foreignClasses=${foreignClasses}, "
+                                + "forbidden=${forbidden}"
+                )
             }
         } finally {
             zip.close()
@@ -223,7 +308,7 @@ tasks.register('verifySourcesJar') {
             def entries = allEntries.findAll { !it.endsWith('/') }
             def required = [
                     'io/github/janguenter/bluemap/glassential/BlueMapGlassentialAddon.java',
-                    'io/github/janguenter/bluemap/glassential/adapter/bluemap522/GlassentialRenderer.java',
+                    'io/github/janguenter/bluemap/glassential/adapter/bluemap523/GlassentialRenderer.java',
                     'bluemap.addon.json',
                     'bluemap-glassential/profiles/exact-artifacts.json',
                     'bluemap-glassential/profiles/glassential/3.4.5-fusion-1.3.12/profile.json',
@@ -237,10 +322,16 @@ tasks.register('verifySourcesJar') {
                     'META-INF/NOTICE-bluemap-glassential-addon.md',
                     'META-INF/THIRD_PARTY-bluemap-glassential-addon.md',
                     'META-INF/bluemap-glassential/upstreams.json'
-            ]
+            ] + approvedSharedSources
             def missing = required.findAll { !entries.contains(it) }
-            if (!missing.isEmpty()) {
-                throw new GradleException("Sources JAR is missing: ${missing}")
+            def nonUniqueShared = approvedSharedSources.findAll { shared ->
+                entries.count { it == shared } != 1
+            }
+            if (!missing.isEmpty() || !nonUniqueShared.isEmpty()) {
+                throw new GradleException(
+                        "Sources JAR shared boundary mismatch: missing=${missing}, "
+                                + "nonUnique=${nonUniqueShared}"
+                )
             }
             def expectedProfileEntries = required.findAll {
                 it.startsWith('bluemap-glassential/profiles/')
@@ -261,6 +352,7 @@ tasks.register('verifySourcesJar') {
             def projectJava = entries.findAll { it.endsWith('.java') }
             def foreignJava = projectJava.findAll {
                 !it.startsWith('io/github/janguenter/bluemap/glassential/')
+                        && !approvedSharedSources.contains(it)
             }
             def sourceAddonText = zip.getInputStream(
                     zip.getEntry('bluemap.addon.json')
@@ -316,6 +408,13 @@ tasks.register('verifySourcesJar') {
                         || it.startsWith('de/maxhenkel/')
                         || it.startsWith('net/minecraft/')
                         || it.startsWith('net/neoforged/')
+                        || it.startsWith(legacyLocalAdapterPackage)
+                        || displacedAdapterHelpers.any { helper -> it == "${helper}.java" }
+                        || legacyFusionSources.contains(it)
+                        || (it.startsWith(sharedAdapterApiPackage)
+                        && !sharedAdapterApiSources.contains(it))
+                        || (it.startsWith(sharedFusionPackage)
+                        && !sharedFusionSources.contains(it))
             }
             if (projectJava.isEmpty() || !foreignJava.isEmpty() || !forbidden.isEmpty()) {
                 throw new GradleException(
@@ -347,6 +446,11 @@ tasks.register('verifyPinnedArtifacts', Exec) {
     commandLine 'python3', 'tools/verify_pinned_artifacts.py',
             '--glassential', glassentialJar.getOrElse('missing'),
             '--fusion', fusionJar.getOrElse('missing')
+}
+
+tasks.register('prototypeCheck') {
+    dependsOn tasks.named('check')
+    dependsOn tasks.named('verifyPinnedArtifacts')
 }
 
 publishing {

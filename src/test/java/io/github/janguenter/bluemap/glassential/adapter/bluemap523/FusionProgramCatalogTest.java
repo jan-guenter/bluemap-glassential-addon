@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: MIT
  */
-package io.github.janguenter.bluemap.glassential.adapter.bluemap522;
+package io.github.janguenter.bluemap.glassential.adapter.bluemap523;
 
 import de.bluecolored.bluemap.core.util.Key;
 import io.github.janguenter.bluemap.glassential.profile.Glassential345Fusion1312Profile;

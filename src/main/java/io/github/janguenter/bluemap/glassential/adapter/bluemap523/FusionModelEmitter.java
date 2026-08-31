@@ -29,7 +29,7 @@
  * sheet selection, and UV clipping are independently authored from the exact
  * installed schema and observable behavior. See docs/PROVENANCE.md.
  */
-package io.github.janguenter.bluemap.glassential.adapter.bluemap522;
+package io.github.janguenter.bluemap.glassential.adapter.bluemap523;
 
 import com.flowpowered.math.TrigMath;
 import com.flowpowered.math.vector.Vector3f;
@@ -57,10 +57,11 @@ import de.bluecolored.bluemap.core.world.BlockState;
 import de.bluecolored.bluemap.core.world.LightData;
 import de.bluecolored.bluemap.core.world.block.BlockNeighborhood;
 import de.bluecolored.bluemap.core.world.block.ExtendedBlock;
-import io.github.janguenter.bluemap.glassential.model.AxisVector;
-import io.github.janguenter.bluemap.glassential.model.FusionDirection;
-import io.github.janguenter.bluemap.glassential.model.FusionTextureSelector;
-import io.github.janguenter.bluemap.glassential.model.TextureOrientation;
+import io.github.janguenter.bluemap.resource.fusion.model.AxisVector;
+import io.github.janguenter.bluemap.resource.fusion.model.FusionDirection;
+import io.github.janguenter.bluemap.resource.fusion.model.FusionTextureLayout;
+import io.github.janguenter.bluemap.resource.fusion.model.FusionTextureSelector;
+import io.github.janguenter.bluemap.resource.fusion.model.TextureOrientation;
 import io.github.janguenter.bluemap.glassential.profile.Glassential345Fusion1312Profile;
 import io.github.janguenter.bluemap.glassential.profile.GlassentialDefinition;
 import io.github.janguenter.bluemap.glassential.profile.ShapeFamily;
@@ -113,7 +114,7 @@ final class FusionModelEmitter {
         this.textureGallery = textureGallery;
         this.renderSettings = renderSettings;
         this.blockColorCalculator = resourcePack.createBlockColorCalculator();
-        this.extension = BlueMap522Adapter.extension(resourcePack);
+        this.extension = BlueMap523Adapter.extension(resourcePack);
     }
 
     boolean render(
@@ -310,7 +311,9 @@ final class FusionModelEmitter {
         TextureOrientation.Frame frame = textureFrame(finalDirection, vertices);
         FusionPredicate predicate = program.predicate(materialKey);
         int mask = connections(predicate, frame);
-        int tile = FusionTextureSelector.tile(texture.layout(), mask);
+        int tile = FusionTextureSelector.tile(
+                FusionTextureLayout.valueOf(texture.layout().name()), mask
+        );
         if (texture.layout() == TextureLayout.PIECED && tile < 0) {
             return emitPieced(vertices, ao, mask, frame, light, face);
         }

@@ -3,7 +3,7 @@
  */
 package io.github.janguenter.bluemap.glassential.activation;
 
-import io.github.janguenter.bluemap.glassential.adapter.bluemap522.FusionProgramCatalog;
+import io.github.janguenter.bluemap.glassential.adapter.bluemap523.FusionProgramCatalog;
 
 /** Process-scoped state for the single exact Glassential/Fusion route. */
 public final class GlassentialRuntime {

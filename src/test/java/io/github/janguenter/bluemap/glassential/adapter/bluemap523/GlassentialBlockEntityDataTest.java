@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: MIT
  */
-package io.github.janguenter.bluemap.glassential.adapter.bluemap522;
+package io.github.janguenter.bluemap.glassential.adapter.bluemap523;
 
 import de.bluecolored.bluemap.core.util.Key;
 import de.bluecolored.bluemap.core.world.BlockEntity;
@@ -22,15 +22,15 @@ class GlassentialBlockEntityDataTest {
 
     @BeforeAll
     static void installExactTypesBeforeDecoderUse() {
-        assertTrue(BlueMap522Adapter.install());
-        assertTrue(BlueMap522Adapter.verifyBlockEntityRetention());
+        assertTrue(BlueMap523Adapter.install());
+        assertTrue(BlueMap523Adapter.verifyBlockEntityRetention());
     }
 
     @Test
     void retainsColorAndLightAndRejectsMissingPersistedColor() throws IOException {
         GlassentialColorBlockEntityData colored = assertInstanceOf(
                 GlassentialColorBlockEntityData.class,
-                BlueMap522Adapter.decode(BlueMap522Adapter.colorProbe(0x123456, true))
+                BlueMap523Adapter.decode(BlueMap523Adapter.colorProbe(0x123456, true))
         );
         assertEquals(0x123456, colored.rgb());
         assertTrue(colored.lightMatches(colorState("true")));
@@ -38,8 +38,8 @@ class GlassentialBlockEntityDataTest {
 
         GlassentialColorBlockEntityData noColor = assertInstanceOf(
                 GlassentialColorBlockEntityData.class,
-                BlueMap522Adapter.decode(BlueMap522Adapter.probe(
-                        BlueMap522Adapter.COLOR_BLOCK_ENTITY_KEY.getFormatted(),
+                BlueMap523Adapter.decode(BlueMap523Adapter.probe(
+                        BlueMap523Adapter.COLOR_BLOCK_ENTITY_KEY.getFormatted(),
                         "EmitLight", (byte) 0
                 ))
         );
@@ -53,14 +53,14 @@ class GlassentialBlockEntityDataTest {
 
     @Test
     void malformedDynamicTypesFailClosedToGenericBlockEntity() throws IOException {
-        BlockEntity badColor = BlueMap522Adapter.decode(BlueMap522Adapter.probe(
-                BlueMap522Adapter.COLOR_BLOCK_ENTITY_KEY.getFormatted(),
+        BlockEntity badColor = BlueMap523Adapter.decode(BlueMap523Adapter.probe(
+                BlueMap523Adapter.COLOR_BLOCK_ENTITY_KEY.getFormatted(),
                 "EmitLight", "not-a-byte"
         ));
         assertFalse(GlassentialRenderer.validColorData(colorState("false"), badColor));
 
-        BlockEntity badMimic = BlueMap522Adapter.decode(BlueMap522Adapter.probe(
-                BlueMap522Adapter.ONE_WAY_BLOCK_ENTITY_KEY.getFormatted(),
+        BlockEntity badMimic = BlueMap523Adapter.decode(BlueMap523Adapter.probe(
+                BlueMap523Adapter.ONE_WAY_BLOCK_ENTITY_KEY.getFormatted(),
                 "Mimic", 42
         ));
         assertEquals(
@@ -88,8 +88,8 @@ class GlassentialBlockEntityDataTest {
             throws IOException {
         return assertInstanceOf(
                 GlassentialOneWayBlockEntityData.class,
-                BlueMap522Adapter.decode(BlueMap522Adapter.probe(
-                        BlueMap522Adapter.ONE_WAY_BLOCK_ENTITY_KEY.getFormatted(),
+                BlueMap523Adapter.decode(BlueMap523Adapter.probe(
+                        BlueMap523Adapter.ONE_WAY_BLOCK_ENTITY_KEY.getFormatted(),
                         "Mimic", mimic
                 ))
         );
@@ -97,7 +97,7 @@ class GlassentialBlockEntityDataTest {
 
     private static BlockState colorState(String lit) {
         return new BlockState(
-                BlueMap522Adapter.COLOR_BLOCK_ENTITY_KEY,
+                BlueMap523Adapter.COLOR_BLOCK_ENTITY_KEY,
                 Map.of("lit", lit)
         );
     }

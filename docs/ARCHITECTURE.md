@@ -1,5 +1,15 @@
 # Architecture
 
+## Shared source boundaries
+
+The production JAR compiles two exact-pinned MIT source sets. Adapter API
+`0.1.0-alpha.2` supplies only the BlueMap 5.23 runtime identity, registry,
+resource-extension, and synthetic-dispatch helpers. Fusion Resource Models
+`0.1.0-alpha.1` supplies only the five pure geometry/selector model sources.
+The consumer keeps all Glassential-specific predicates, resource loading,
+registration, activation, and rendering. Neither support-module JAR is a
+runtime dependency, and no 5.22 render-core module is used.
+
 ## Activation
 
 ```text

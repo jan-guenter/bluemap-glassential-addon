@@ -1,5 +1,19 @@
 # Releasing
 
+The current `0.1.0-alpha.2` source is an unpublished BlueMap 5.23 migration
+candidate. Its accepted artifact identities remain `PENDING`; do not tag or
+publish it until the integration gallery is accepted and those identities are
+sealed. The alpha.1 identities below are historical and immutable.
+
+Initialize all three exact source checkouts before running the gate:
+
+```bash
+git submodule update --init --recursive -- \
+  tooling/bluemap-addon-toolkit \
+  modules/bluemap-addon-adapter-api \
+  modules/bluemap-fusion-resource-models
+```
+
 The owner explicitly accepted the frozen candidate's visual result on
 2026-08-16 after its exact-client six-cell comparison and isolated BlueMap
 staging passed. The restart-scoped disabled control and physical-removal
@@ -27,7 +41,7 @@ The frozen candidate asset identities are:
 | `bluemap-glassential-addon-0.1.0-alpha.1.module.json` | 2,847 | `f96bdd237f750d581fc79069814ded305851b76169e2a6e87b73d47eec057553` |
 | `SHA256SUMS` | 464 | `ac35389832fbb972f80e6c9c86244445ab5b7a2576672191becce7514a36566f` |
 
-Documentation and workflow hardening may occur after the candidate freeze only
+Documentation and workflow hardening for alpha.1 occurred after its freeze only
 if the release gate proves the five asset identities above unchanged. Release
 authorization is limited to those exact five identities. Any changed release
 asset requires a new freeze, technical gate, and explicit owner acceptance.
