@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "status": "unpublished-migration-candidate",
+  "published": false,
+  "version": "0.1.0-alpha.2",
+  "release_date": "2026-08-31",
+  "repository": "https://github.com/jan-guenter/bluemap-glassential-addon",
+  "tag": "v0.1.0-alpha.2",
+  "maven_coordinate": "io.github.jan-guenter:bluemap-glassential-addon:0.1.0-alpha.2",
+  "candidate_artifacts": {
+    "production_jar": {
+      "file_name": "bluemap-glassential-addon-0.1.0-alpha.2.jar",
+      "size": 166871,
+      "sha256": "9df99ffba26b1dd5a38452fb020e9a931b6a16a4ab4c374d85dad91cb9437e60"
+    },
+    "sources_jar": {
+      "file_name": "bluemap-glassential-addon-0.1.0-alpha.2-sources.jar",
+      "size": 82758,
+      "sha256": "1246e9052b9c0597fe89916571e66fffa5c90d1a2814c69a0ef6bc72928d24cf"
+    },
+    "pom": {
+      "file_name": "bluemap-glassential-addon-0.1.0-alpha.2.pom",
+      "size": 1355,
+      "sha256": "4bf570b09d88cd804b221601592af9e4e2be041a330ab931e25cd7845f298dbf"
+    },
+    "gradle_module": {
+      "file_name": "bluemap-glassential-addon-0.1.0-alpha.2.module.json",
+      "size": 2847,
+      "sha256": "e8a6c25c25b348c8ad76c1699cfeb00a8bf0429d1e878a04950611de68e5c7c1"
+    }
+  },
+  "baseline_release": {
+    "version": "0.1.0-alpha.1",
+    "tag": "v0.1.0-alpha.1",
+    "commit": "13fd12412573c62847700d1cfc8e4aa9d2bb5ea1",
+    "tree": "a78b51fa46e1c6d93a1388c1873967bdbfaed76b",
+    "production_jar_size": 162440,
+    "production_jar_sha256": "a956e62f7b843391917b861c831545b07af43ccceaa0bb84465e7e0b14c49780",
+    "owner_visual_acceptance": true,
+    "release_assets": {
+      "sources_jar": {
+        "size": 79193,
+        "sha256": "b2cc577972e8dec52c0ce1ea2a4c0321ec209c96b0476fab340f8bbc0125db9b"
+      },
+      "pom": {
+        "size": 1355,
+        "sha256": "ac64d9ec689cf7be1826a62e1dfb347fb63b4d04724b2ab11d0cb44f5dc3e7e7"
+      },
+      "gradle_module": {
+        "size": 2847,
+        "sha256": "f96bdd237f750d581fc79069814ded305851b76169e2a6e87b73d47eec057553"
+      },
+      "sha256sums": {
+        "size": 464,
+        "sha256": "ac35389832fbb972f80e6c9c86244445ab5b7a2576672191becce7514a36566f"
+      }
+    }
+  },
+  "adapter_api_migration": {
+    "repository": "https://github.com/jan-guenter/bluemap-addon-adapter-api",
+    "version": "0.1.0-alpha.2",
+    "tag": "v0.1.0-alpha.2",
+    "release_target_commit": "e81f08bc4bfbf02d810ec8949a019130e2e61634",
+    "source_tree": "2f974c9bb2ba13888d69682f86f30f58922d30eb",
+    "target_bluemap_version": "5.22-feature.backport-5.23-stateless-java-web-server-46",
+    "bluemap_commit": "7e07f4e74ec1e92a6ead9aa1e66054af3e133aac",
+    "bluemap_api_commit": "285c9a60eff3ac2b0cab308ce1058d1565be0971",
+    "tested_source_commit": "dc90756dc5966f091a73501053f2776cfd7dc2cd",
+    "tested_source_tree": "25e12e237b262620947d7abfad67be006c75fe62",
+    "compiled_source_count": 4,
+    "standalone_module_jar_bundled": false,
+    "standalone_module_jar_nested": false,
+    "standalone_module_jar_installed": false,
+    "legacy_522_render_core_module_used": false,
+    "local_adapter_package": "io.github.janguenter.bluemap.glassential.adapter.bluemap523",
+    "displaced_local_helpers": [
+      "AdapterCompatibility",
+      "inline registry admission methods",
+      "GlassentialResourceExtensionType",
+      "inline synthetic dispatch validation"
+    ]
+  },
+  "fusion_resource_models_migration": {
+    "repository": "https://github.com/jan-guenter/bluemap-fusion-resource-models",
+    "version": "0.1.0-alpha.1",
+    "tag": "v0.1.0-alpha.1",
+    "release_target_commit": "3ddd5d39bb7cc8664c242aedd849a636316075c2",
+    "source_tree": "6e85031ff2f0e7417a7a2fb0babbf7ed5a4f218a",
+    "compiled_source_count": 5,
+    "standalone_module_jar_bundled": false,
+    "standalone_module_jar_nested": false,
+    "standalone_module_jar_installed": false,
+    "displaced_local_classes": [
+      "AxisVector",
+      "FusionDirection",
+      "FusionTextureSelector",
+      "TextureOrientation"
+    ]
+  },
+  "preserved_contract": {
+    "routed_block_count": 49,
+    "legal_state_count": 471,
+    "operator_resource_count": 204,
+    "host_resource_count": 22,
+    "gallery_cell_count": 6,
+    "gallery_placement_count": 80,
+    "gallery_observation_count": 83,
+    "gallery_sources_changed": false,
+    "profiles_and_resources_changed": false,
+    "renderer_behavior_changed": false,
+    "stock_fallback_changed": false
+  },
+  "verification": {
+    "exact_input_gate": true,
+    "adapter_api_gitlink_and_source_tree_gate": true,
+    "fusion_module_gitlink_and_source_tree_gate": true,
+    "production_archive_boundary_gate": true,
+    "sources_archive_boundary_gate": true,
+    "exact_feature_backport_runtime_identity_gate": true,
+    "gradle_9_6_1_clean_build": true,
+    "java_runtime": "21.0.12.1+1",
+    "java_tests_passed": 47,
+    "python_tests_passed": 13,
+    "gallery_integrity": true,
+    "checkstyle": true,
+    "actionlint": true,
+    "release_identity_sealed": false
+  }
+}
